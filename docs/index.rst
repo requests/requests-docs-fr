@@ -13,11 +13,11 @@ pour les êtres humains.
 
 Le module **urllib2** de la librairie standard fournit toutes les
 fonctionnalités dont vous avez besoin, mais son API est complètement **moisie**.
-Il a été crée dans un autre époque - lorsque le web était autre chose,
-et demande une *énorme* quantité de de travail (voir des remplacements de
+Il a été crée dans une autre époque - lorsque le web était autre chose,
+et demande une *énorme* quantité de travail (voire des remplacements de
 méthodes) pour achever les plus simples tâches.
 
-Ca ne doit pas se passer comme ca. Pas en Python.
+Ca ne devrait pas se passer comme ca. Pas en Python.
 
 ::
 

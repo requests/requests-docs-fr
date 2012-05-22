@@ -22,11 +22,11 @@ Mais, ce n'est pas conseillé <http://www.pip-installer.org/en/latest/other-tool
 
 
 
-Mirroir Cheeseshop
+Miroir Cheeseshop
 ------------------
 
 Si Cheeseshop n'est pas accessible, vous pouvez également installer Requests 
-depuis le  `mirroir personnel Cheeseshop <http://pip.kennethreitz.com/>`_ de 
+depuis le  `miroir personnel Cheeseshop <http://pip.kennethreitz.com/>`_ de 
 Kenneth Reitz:: 
 
     $ pip install -i http://pip.kennethreitz.com/simple requests
@@ -61,7 +61,7 @@ Python, ou l'installer facilement dans votre dossier site-packages::
 Installer Gevent
 -----------------
 
-Si vous utiliser le module ``requests.async`` pour faire des requêtes concurrents, alors
+Si vous utiliser le module ``requests.async`` pour faire des requêtes concurrentes, alors
 vous avez besoin d'installer gevent.
 
 Pour installer gevent, vous aurez besoin de ``libevent``.

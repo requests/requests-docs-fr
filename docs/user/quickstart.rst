@@ -148,7 +148,7 @@ de la requête::
     }
 
 Dans certains cas, vous ne souhaitez pas que les données soit encodées. 
-Si vous passez une chaîne de caractères ``string`` à la place d'un object 
+Si vous passez une chaîne de caractères ``string`` à la place d'un objet 
 ``dict``, les données seront postées directement.
 
 Par exemple, l'API GitHub v3 accepte les requêtes POST/PATCH avec des données 
@@ -164,7 +164,7 @@ En-têtes personnalisées
 -----------------------
 
 Si vous souhaitez ajouter des en-têtes HTTP personnalisées (headers) à une 
-requête, il vous suffit de passer un object ``dict`` dans le paramètre ``headers``.
+requête, il vous suffit de passer un objet ``dict`` dans le paramètre ``headers``.
 
 Par exemple, nous n'avions pas spécifié de content-type dans notre exemple 
 précédent::
@@ -269,7 +269,7 @@ Nous pouvons vérifier le code de retour d'une réponse::
     200
 
 Requests fournit également un code de statut interne pour faciliter
-les verifications :
+les vérifications :
 
     >>> r.status_code == requests.codes.ok
     True
@@ -379,7 +379,7 @@ Fournir de cette manière un tuple d'authentification au paramètre `auth`
 Authentification Digest 
 -----------------------
 
-Une autre form populaire de protection des web services est l'autthentification Digest::
+Une autre forme populaire de protection des web services est l'authentification Digest::
 
     >>> from requests.auth import HTTPDigestAuth
     >>> url = 'http://httpbin.org/digest-auth/auth/user/pass'

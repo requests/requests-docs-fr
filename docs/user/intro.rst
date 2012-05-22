@@ -27,7 +27,7 @@ toujours la licence idéale pour les projets open source.
 Un projet distribué sous licence GPL ne peut pas être utilisé dans des produits
 commerciaux sans que le produit lui-même soit également open-source.
 
-Les licences MIT, BSD, ISC, et Apache2 sont de très bonens alternatives à la GPL
+Les licences MIT, BSD, ISC, et Apache2 sont de très bonnes alternatives à la GPL
 qui permettent qu'un projet open source soit utilisé librement dans des projets
 propriétaires et closed-source.
 

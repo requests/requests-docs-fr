@@ -72,7 +72,7 @@ Exemple::
     tarball_url = 'https://github.com/kennethreitz/requests/tarball/master'
     r = requests.get(tarball_url)
 
-La requête a été effectuée, et la connextion est toujorus ouverte. Le corps de la réponse n' a pas encore  été téléchargé.::
+La requête a été effectuée, et la connexion est toujours ouverte. Le corps de la réponse n' a pas encore  été téléchargé.::
 
     r.content
 
@@ -97,7 +97,7 @@ Keep-Alive
 
 Bonne nouvelle - grâce à urllib3, le keep-alive est 100% automatique pendant une session! Toutes les requêtes que vous ferez à travers une session réutiliseront automatiquement la connexion appropriée!
 
-A noter que les connexion ne sont libérés pour réutilisation seulement lorsque les données ont été lues. Faites attention à bien mettre ``prefetch`` à ``True`` ou toujours accéder à la propriété ``content`` de l'object ``Response``.
+A noter que les connexions ne sont libérées pour réutilisation seulement lorsque les données ont été lues. Faites attention à bien mettre ``prefetch`` à ``True`` ou toujours accéder à la propriété ``content`` de l'object ``Response``.
 
 Si vous souhaitez désactiver le keep-alive, vous pouvez définir l'attribut de configuration ``keep_alive`` à ``False``::
 
@@ -105,10 +105,10 @@ Si vous souhaitez désactiver le keep-alive, vous pouvez définir l'attribut de 
     s.config['keep_alive'] = False
 
 
-Requetes asynchrones
+Requêtes asynchrones
 --------------------
 
-Requests dispose d'un support de première classe pour les requêtes concurrente, 
+Requests dispose d'un support de première classe pour les requêtes concurrentes, 
 grâce à gevent. ceci vous permet d'envoyer des paquets de requêtes HTTP en même temps.
 
 Premièrement, importez le module async. Bien sûr, il vous faut le module `gevent <http://pypi.python.org/pypi/gevent>`_::
@@ -117,7 +117,7 @@ Premièrement, importez le module async. Bien sûr, il vous faut le module `geve
     from requests import async
 
 Le module ``async`` a exactement la même API que ``requests``, sauf qu'il 
-n'envoie pas les requêtes immédiatement. A la place, il renvoie un object 
+n'envoie pas les requêtes immédiatement. A la place, il renvoie un objet 
 ``Request``.
 
 On peut facilement créer une liste d'objets ``Request``::
