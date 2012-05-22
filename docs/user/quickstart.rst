@@ -5,34 +5,35 @@ Quickstart
 
 .. module:: requests.models
 
-Eager to get started? This page gives a good introduction in how to get started
-with Requests. This assumes you already have Requests installed. If you do not,
-head over to the :ref:`Installation <install>` section.
+Impatient de commencer? Cette page vous donne une bonne introduction pour démarrer
+avec Requests. Ceci implique que vous ayez déja Requests installé. Si ce n'est pas
+la cas, suivez la section  :ref:`Installation <install>`.
 
-First, make sure that:
+Premièrement, vérifier que:
 
-* Requests is :ref:`installed <install>`
-* Requests is :ref:`up-to-date <updates>`
-
-
-Lets gets started with some simple use cases and examples.
+* Requests est :ref:`installé <install>`
+* Requests est :ref:`à jour <updates>`
 
 
-Make a GET Request
-------------------
+Commençons avec des exemples et des cas simples.
 
-Making a standard request with Requests is very simple.
 
-Let's get GitHub's public timeline ::
+Faire une requête GET
+---------------------
+
+Lancer une requête standard avec Request est très simple.
+
+Récupérons la timeline publique de github ::
 
     r = requests.get('https://github.com/timeline.json')
 
-Now, we have a :class:`Response` object called ``r``. We can get all the
-information we need from this.
+Nous récupérons un objet :class:`Response` appelé ``r``. Celui-ci fournit
+toutes les informations dont nous avons besoin.
 
-Typically, you want to send some sort of data in the urls query string.
-To do this, simply pass a dictionary to the `params` argument. Your
-dictionary of data will automatically be encoded when the request is made::
+Typiquement, vous aimeriez envoyer des informations quand la query string (URL).
+Pour faire cela, il suffit de passer un dictionnaire avec l'argument `params`.
+Votre dictionnaire de données sera automatiquement encodé lorsque la requête 
+sera faite::
 
     >>> payload = {'key1': 'value1', 'key2': 'value2'}
     >>> r = requests.get("http://httpbin.org/get", params=payload)
@@ -57,47 +58,50 @@ dictionary of data will automatically be encoded when the request is made::
 
 
 
-Response Content
-----------------
+Contenu de la réponse
+---------------------
 
-We can read the content of the server's response::
+Nous pouvons lire le contenu de la réponse du serveur::
 
     >>> r.text
     '[{"repository":{"open_issues":0,"url":"https://github.com/...
 
-Requests will automatically decode content from the server. Most unicode
-charsets are seamlessly decoded.
+Requests décode automatiquement le contenu envoyé par le serveur. La plupart des
+caractères unicode sont décodés de manière transparente.
 
-When you make a request, ``r.encoding`` is set, based on the HTTP headers.
-Requests will use that encoding when you access ``r.text``.  If ``r.encoding``
-is ``None``, Requests will make an extremely educated guess of the encoding
-of the response body. You can manually set ``r.encoding`` to any encoding
-you'd like, and that charset will be used.
+Quand vous créez une requête, l'attribut ``r.encoding`` est défini par rapport 
+aux en-têtes HTTP (headers). Requests utilisera ensuite cet encodage quand vous 
+accéderez à ``r.text``. Si ``r.encoding`` est ``None``, Requests tentera de 
+deviner l'encodage du corps de la réponse. Vous pouvez également forcer 
+``r.encoding`` à l'encodage de votre choix, et ce charset sera alors utilisé 
+pour le décodage de la réponse.
 
 
-Binary Response Content
------------------------
+Contenu de réponse binaire
+--------------------------
 
-You can also access the response body as bytes, for non-text requests::
+Pour les requêtes non-texte (fichiers binaires), vous pouvez accéder au 
+contenu de la réponse sous forme de bytes::
 
     >>> r.content
     b'[{"repository":{"open_issues":0,"url":"https://github.com/...
 
-The ``gzip`` and ``deflate`` transfer-encodings are automatically decoded for you.
+Les réponse avec le header transfer-encodings à ``gzip`` et ``deflate`` sont 
+automatiquement décodés pour vous.
 
-For example to create an image from binary data returned by a request, you can
-use the following code:
+Par exemple, pour créer une image à partir de données recues par une requête, vous
+pouvez utiliser le code suivant:
 
     >>> from PIL import Image
     >>> from StringIO import StringIO
     >>> i = Image.open(StringIO(r.content))
 
 
-Raw Response Content
---------------------
+Contenu de réponse brut
+-----------------------
 
-In the rare case that you'd like to get the absolute raw socket response from the server,
-you can access ``r.raw``::
+Dans de rares cas, si vous avez besoin d'accéder au contenu brut de la 
+réponse serveur, vous pouvez y accéder avec ``r.raw``::
 
     >>> r.raw
     <requests.packages.urllib3.response.HTTPResponse object at 0x101194810>
@@ -107,17 +111,18 @@ you can access ``r.raw``::
 
 
 
-Make a POST Request
--------------------
+Faire une requête POST
+----------------------
 
-POST requests are equally simple::
+Les requêtes POST sont aussi simples::
 
     r = requests.post("http://httpbin.org/post")
 
 
-Typically, you want to send some form-encoded data — much like an HTML form.
-To do this, simply pass a dictionary to the `data` argument. Your
-dictionary of data will automatically be form-encoded when the request is made::
+Typiquement, vous aimeriez envoyer des données encodées comme un formulaire HTML.
+Pour cela, passez simplement un dictionnaire avec l'argument `data`. Votre
+dictionnaire de données sera automatiquement encodé comme un formulaire au moment
+de la requête::
 
     >>> payload = {'key1': 'value1', 'key2': 'value2'}
     >>> r = requests.post("http://httpbin.org/post", data=payload)
@@ -142,9 +147,12 @@ dictionary of data will automatically be form-encoded when the request is made::
       "data": ""
     }
 
-There are many times that you want to send data that is not form-encoded. If you pass in a ``string`` instead of a ``dict``, that data will be posted directly.
+Dans certains cas, vous ne souhaitez pas que les données soit encodées. 
+Si vous passez une chaîne de caractères ``string`` à la place d'un object 
+``dict``, les données seront postées directement.
 
-For example, the GitHub API v3 accepts JSON-Encoded POST/PATCH data::
+Par exemple, l'API GitHub v3 accepte les requêtes POST/PATCH avec des données 
+JSON::
 
     url = 'https://api.github.com/some/endpoint'
     payload = {'some': 'data'}
@@ -152,13 +160,14 @@ For example, the GitHub API v3 accepts JSON-Encoded POST/PATCH data::
     r = requests.post(url, data=json.dumps(payload))
 
 
-Custom Headers
---------------
+En-têtes personnalisées
+-----------------------
 
-If you'd like to add HTTP headers to a request, simply pass in a ``dict`` to the
-``headers`` parameter.
+Si vous souhaitez ajouter des en-têtes HTTP personnalisées (headers) à une 
+requête, il vous suffit de passer un object ``dict`` dans le paramètre ``headers``.
 
-For example, we didn't specify our content-type in the previous example::
+Par exemple, nous n'avions pas spécifié de content-type dans notre exemple 
+précédent::
 
     url = 'https://api.github.com/some/endpoint'
     payload = {'some': 'data'}
@@ -167,10 +176,10 @@ For example, we didn't specify our content-type in the previous example::
     r = requests.post(url, data=json.dumps(payload), headers=headers)
 
 
-POST a Multipart-Encoded File
------------------------------
+POST avec des fichiers MultiPart
+--------------------------------
 
-Requests makes it simple to upload Multipart-encoded files::
+Requests simplifie l'upload de fichiers encodés en MultiPart::
 
     >>> url = 'http://httpbin.org/post'
     >>> files = {'report.xls': open('report.xls', 'rb')}
@@ -196,7 +205,7 @@ Requests makes it simple to upload Multipart-encoded files::
       "data": ""
     }
 
-Setting filename explicitly::
+Forcer le nom du fichier explicitement::
 
     >>> url = 'http://httpbin.org/post'
     >>> files = {'file': ('report.xls', open('report.xls', 'rb'))}
@@ -222,7 +231,7 @@ Setting filename explicitly::
       "data": ""
     }
 
-Sending strings to be received as files::
+Envoyer des chaînes de caractères en tant que fichier ::
 
     >>> url = 'http://httpbin.org/post'
     >>> files = {'file': ('report.csv', 'some,data,to,send\nanother,row,to,send\n')} 
@@ -251,22 +260,22 @@ Sending strings to be received as files::
     }
 
 
-Response Status Codes
----------------------
+Codes de retour des réponses (status)
+-------------------------------------
 
-We can check the response status code::
+Nous pouvons vérifier le code de retour d'une réponse::
 
     >>> r.status_code
     200
 
-Requests also comes with a built-in status code lookup object for easy
-reference::
+Requests fournit également un code de statut interne pour faciliter
+les verifications :
 
     >>> r.status_code == requests.codes.ok
     True
 
-If we made a bad request (non-200 response), we can raise it with
-:class:`Response.raise_for_status()`::
+Si nous faisons une mauvaise requête (code de retour autre que 200), nous
+pouvons lever une exception avec :class:`Response.raise_for_status()`::
 
     >>> _r = requests.get('http://httpbin.org/status/404')
     >>> _r.status_code
@@ -278,19 +287,19 @@ If we made a bad request (non-200 response), we can raise it with
         raise self.error
     urllib2.HTTPError: HTTP Error 404: NOT FOUND
 
-But, since our ``status_code`` was ``200``, when we call it::
+Mais si notre ``status_code`` est ``200``, lorsqu'on l'appelle::
 
     >>> r.raise_for_status()
     None
 
-All is well.
+Tout va bien.
 
 
-Response Headers
-----------------
+En-têtes des réponses
+---------------------
 
-We can view the server's response headers with a simple Python dictionary
-interface::
+On peut accéder aux en-têtes HTTP (headers) de la réponse du serveur via
+une simple dictionnaire Python::
 
     >>> r.headers
     {
@@ -304,11 +313,11 @@ interface::
         'content-type': 'application/json; charset=utf-8'
     }
 
-The dictionary is special, though: it's made just for HTTP headers. According to
-`RFC 2616 <http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html>`_, HTTP
-Headers are case-insensitive.
+Ce dictionnaire est cependant particulier : Il est spécifique aux en-têtes HTTP.
+En effet, selon la `RFC 2616 <http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html>`_, 
+les en-têtes HTTP ne doivent pas être sensibles à la casse.
 
-So, we can access the headers using any capitalization we want::
+Donc, nous pouvons accéder aux en-têtes quelque soit la casse utilisée::
 
     >>> r.headers['Content-Type']
     'application/json; charset=utf-8'
@@ -316,7 +325,7 @@ So, we can access the headers using any capitalization we want::
     >>> r.headers.get('content-type')
     'application/json; charset=utf-8'
 
-If a header doesn't exist in the Response, its value defaults to ``None``::
+Si l'en-tête n'existe pas dans la Response, la valeur par défaut est ``None``::
 
     >>> r.headers['X-Random']
     None
@@ -325,16 +334,16 @@ If a header doesn't exist in the Response, its value defaults to ``None``::
 Cookies
 -------
 
-If a response contains some Cookies, you can get quick access to them::
+Si la résponse contient des Cookies, vous pouvez y accéder rapidement::
 
-    >>> url = 'http://httpbin.org/cookies/set/requests-is/awesome'
+    >>> url = 'http://httpbin.org/cookies/set/requests-is/formidable'
     >>> r = requests.get(url)
 
     >>> r.cookies['requests-is']
-    'awesome'
+    'formidable'
 
-To send your own cookies to the server, you can use the ``cookies``
-parameter::
+Pour envoyer vos propres cookies au serveur, vous pouvez utiliser le
+paramètre ``cookies``::
 
     >>> url = 'http://httpbin.org/cookies'
     >>> cookies = dict(cookies_are='working')
@@ -344,32 +353,33 @@ parameter::
     '{"cookies": {"cookies_are": "working"}}'
 
 
-Basic Authentication
---------------------
+Authentification basique
+------------------------
 
-Most web services require authentication. There many different types of
-authentication, but the most common is HTTP Basic Auth.
+La plupart des services web nécessitent une authentification. Il y a
+différents types d'authentification, mais la plus commune est 
+l'authentification HTTP basique.
 
-Making requests with Basic Auth is extremely simple::
+Utiliser l'authentification basique avec Requests est extrêmement simple::
 
     >>> from requests.auth import HTTPBasicAuth
     >>> requests.get('https://api.github.com/user', auth=HTTPBasicAuth('user', 'pass'))
     <Response [200]>
 
-Due to the prevalence of HTTP Basic Auth, requests provides a shorthand for
-this authentication method::
+Comme l'authentification HTTP basique est le standard le plus répandu, Requests 
+fournit un raccourci pour cette méthode d'authentification::
 
     >>> requests.get('https://api.github.com/user', auth=('user', 'pass'))
     <Response [200]>
 
-Providing the credentials as a tuple in this fashion is functionally equivalent
-to the ``HTTPBasicAuth`` example above.
+Fournir de cette manière un tuple d'authentification au paramètre `auth` 
+équivaut à utiliser l'exemple ``HTTPBasicAuth`` ci-dessus.
 
 
-Digest Authentication
----------------------
+Authentification Digest 
+-----------------------
 
-Another popular form of web service protection is Digest Authentication::
+Une autre form populaire de protection des web services est l'autthentification Digest::
 
     >>> from requests.auth import HTTPDigestAuth
     >>> url = 'http://httpbin.org/digest-auth/auth/user/pass'
@@ -377,19 +387,20 @@ Another popular form of web service protection is Digest Authentication::
     <Response [200]>
 
 
-OAuth Authentication
---------------------
+Authentification OAuth
+----------------------
 
-Miguel Araujo's `requests-oauth <http://pypi.python.org/pypi/requests-oauth>`_ project provides a simple interface for
-establishing OAuth connections. Documentation and examples can be found on the requests-oauth `git repository <https://github.com/maraujop/requests-oauth>`_.
+Le projet `requests-oauth <http://pypi.python.org/pypi/requests-oauth>`_ de Miguel Araujo fournit une interface
+simple pour établir des connexions OAuth. La documentation et des exemples peuvent être trouvées sur `git repository <https://github.com/maraujop/requests-oauth>`_.
 
 
-Redirection and History
------------------------
+Redirections et Historique
+--------------------------
 
-Requests will automatically perform location redirection while using idempotent methods.
+Requests effectue automatiquement les redirections en utilisant des méthodes 
+idempotentes, qui ne modifient pas la requête.
 
-GitHub redirects all HTTP requests to HTTPS. Let's see what happens::
+GutHub redirige tout le traffic HTTP vers HTTPS. Regardons ce qu'il se passe::
 
     >>> r = requests.get('http://github.com')
     >>> r.url
@@ -399,11 +410,11 @@ GitHub redirects all HTTP requests to HTTPS. Let's see what happens::
     >>> r.history
     [<Response [301]>]
 
-The :class:`Response.history` list contains a list of the
-:class:`Request` objects that were created in order to complete the request.
+La liste :class:`Response.history` contient la liste des objets 
+:class:`Request` qui ont été crées pour compléter la requête.
 
-If you're using GET, HEAD, or OPTIONS, you can disable redirection
-handling with the ``allow_redirects`` parameter::
+Si vous utilisez les methodes GET, HEAD, or OPTIONS, vous pouvez désactiver la 
+gestion des redirections avec le paramètre ``allow_redirects``::
 
     >>> r = requests.get('http://github.com', allow_redirects=False)
     >>> r.status_code
@@ -411,7 +422,8 @@ handling with the ``allow_redirects`` parameter::
     >>> r.history
     []
 
-If you're using POST, PUT, PATCH, *&c*, you can also explicitly enable redirection as well::
+Si vous utilisez POST, PUT, PATCH, *&c*, vous pouvez aussi autoriser explicitement
+les redirections::
 
     >>> r = requests.post('http://github.com', allow_redirects=True)
     >>> r.url
@@ -423,7 +435,8 @@ If you're using POST, PUT, PATCH, *&c*, you can also explicitly enable redirecti
 Timeouts
 --------
 
-You can tell requests to stop waiting for a response after a given number of seconds with the ``timeout`` parameter::
+Vous pouvez demander à Requests d'arrêter d'attendre après un certains nombre de secondes 
+avec le paramètre ``timeout``::
 
     >>> requests.get('http://github.com', timeout=0.001)
     Traceback (most recent call last):
@@ -432,29 +445,30 @@ You can tell requests to stop waiting for a response after a given number of sec
 
 .. admonition:: Note
 
-    ``timeout`` only effects the connection process itself, not the downloading of the response body.
+    ``timeout`` affecte uniquement le processus de connection, pas le temps de téléchargment
+    des réponses.
 
 
-Errors and Exceptions
+Erreurs et Exceptions
 ---------------------
 
-In the event of a network problem (e.g. DNS failure, refused connection, etc),
-Requests will raise a :class:`ConnectionError` exception.
+Dans le cas de problèmes de réseau (e.g. erreurs DNS, connexions refusées, etc),
+Requests lévera une exception :class:`ConnectionError`.
 
-In the event of the rare invalid HTTP response, Requests will raise
-an  :class:`HTTPError` exception.
+Dans les rares cas de réponses HTTP invalides, Requests lévera une exception 
+:class:`HTTPError`.
 
-If a request times out, a :class:`Timeout` exception is raised.
+Si une requête dépasse le temps d'attente, une exception :class:`Timeout` est levée.
 
-If a request exceeds the configured number of maximum redirections, a :class:`TooManyRedirects` exception is raised.
+Si une requête dépasse le nombre maximum de redirections possibles, une exception 
+:class:`TooManyRedirects` est levée.
 
-All exceptions that Requests explicitly raises inherit from
-:class:`requests.exceptions.RequestException`.
+Toutes les exceptions levées par Requests héritent de :class:`requests.exceptions.RequestException`.
 
-You can refer to :ref:`Configuration API Docs <configurations>` for immediate raising of :class:`HTTPError` exceptions
-via the ``danger_mode`` option or have Requests catch the majority of :class:`requests.exceptions.RequestException` exceptions
-with the ``safe_mode`` option.
+Vous pouvez vous réferer à :ref:`Configuration API Docs <configurations>` si vous souhaitez toujours lever 
+des exceptions :class:`HTTPError` avec l'option ``danger_mode``, ou laisser Requests attraper la majorité 
+des :class:`requests.exceptions.RequestException` avec l'option ``safe_mode``.
 
 -----------------------
 
-Ready for more? Check out the :ref:`advanced <advanced>` section.
+Prêt pour aller plus loin ? Visitez la section :ref:`avancée <advanced>`.

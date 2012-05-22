@@ -3,18 +3,21 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Requests: HTTP for Humans
-=========================
+Requests: HTTP pour les humains
+===============================
 
 Release v\ |version|. (:ref:`Installation <install>`)
 
-Requests is an :ref:`ISC Licensed <isc>` HTTP library, written in Python, for human beings.
+Requests est une librairie HTTP :ref:`sous licence ISC<isc>`, écrite en Python,
+pour les êtres humains.
 
-Python's standard **urllib2** module provides most of
-the HTTP capabilities you need, but the API is thoroughly **broken**.
-It was built for a different time — and a different web. It requires an *enormous* amount of work (even method overrides) to perform the simplest of tasks.
+Le module **urllib2** de la librairie standard fournit toutes les
+fonctionnalités dont vous avez besoin, mais son API est complètement **moisie**.
+Il a été crée dans un autre époque - lorsque le web était autre chose,
+et demande une *énorme* quantité de de travail (voir des remplacements de
+méthodes) pour achever les plus simples tâches.
 
-Things shouldn’t be this way. Not in Python.
+Ca ne doit pas se passer comme ca. Pas en Python.
 
 ::
 
@@ -26,12 +29,16 @@ Things shouldn’t be this way. Not in Python.
     >>> r.text
     ...
 
-See `the same code, without Requests <https://gist.github.com/973705>`_.
+Voir `le même code, sans Requests <https://gist.github.com/973705>`_.
 
-Requests takes all of the work out of Python HTTP/1.1 — making your integration with web services seamless. There's no need to manually add query strings to your URLs, or to form-encode your POST data. Keep-alive and HTTP connection pooling are 100%  automatic, powered by `urllib3 <https://github.com/shazow/urllib3>`_, which is embedded within Requests.
+Requests reprend tout les travaux autour de Python HTTP/1.1 - et rend
+l'intégration avec des webservices très facile. Pas besoin d'ajouter des
+querystrings à vos URLs manuellement, ou d'encoder vous-même vos datas pour
+les POST. Les Keep-alive et le groupement des connexions HTTP sont 100%
+automatisés, grâce à `urllib3 <https://github.com/shazow/urllib3>`_,
+qui est directement intégré à Requests.
 
-
-Testimonials
+Témoignages
 ------------
 
 `Heroku <http://heroku.com>`_, `PayPal <https://www.paypal.com/>`_,
@@ -40,50 +47,48 @@ Testimonials
 `Twitter, Inc <http://twitter.com>`_,
 `Readability <http://readability.com>`_, and
 Federal US Institutions
-use Requests internally. It has been installed over 100,000 times from PyPI.
+utilisent Requests en interne. Le module a été installé plus de 100,000 fois via PyPI.
 
 **Armin Ronacher**
-    Requests is the perfect example how beautiful an API can be with the
-    right level of abstraction.
+    Requests est l'exemple parfait de ce que peut être une belle API grâce
+    à la bonne dose d'abstraction.
 
 **Matt DeBoard**
-    I'm going to get @kennethreitz's Python requests module tattooed
-    on my body, somehow. The whole thing.
+    Je vais me tatouer le module Python requests de @kennethreitz
+    sur le corps, d'une façon ou d'une autre. partout.
 
 **Daniel Greenfeld**
-    Nuked a 1200 LOC spaghetti code library with 10 lines of code thanks to
-    @kennethreitz's request library. Today has been AWESOME.
+    Je viens de passer de 1200 lignes de code spaghetti à 10 lignes de code
+    grâce au module requests de @kennethreitz. Aujourd'hui est un grand jour.
 
 **Kenny Meyers**
-    Python HTTP: When in doubt, or when not in doubt, use Requests. Beautiful,
-    simple, Pythonic.
+    HTTP avec Python: si vous avez un doute, ou pas, utilisez Requests.
+    Beau, simple, pythonic.
 
 
-Feature Support
+Fonctionnalités
 ---------------
 
-Requests is ready for today's web.
+Requests est prêt pour le web d'aujourd'hui
 
-- International Domains and URLs
-- Keep-Alive & Connection Pooling
-- Sessions with Cookie Persistence
-- Browser-style SSL Verification
-- Basic/Digest Authentication
-- Elegant Key/Value Cookies
-- Automatic Decompression
-- Unicode Response Bodies
-- Multipart File Uploads
-- Connection Timeouts
-- ``.netrc`` support
+- Gestion domaines et URLS internationales
+- Keep-Alive & Groupement de connections (Pooling)
+- Sessions et Cookies persistants
+- Verification SSL
+- Authentifications Basic/Digest ou personnalisées
+- Gestion élégante des Cookies clé/valeur
+- Décompression automatique
+- Corps des réponses en unicode
+- Upload de fichiers multiparts
+- Timeouts de connexion
+- supprt de ``.netrc``
 - Thread-safe.
 
 
-User Guide
-----------
+Guide utilisateur
+-----------------
 
-This part of the documentation, which is mostly prose, begins with some
-background information about Requests, then focuses on step-by-step
-instructions for getting the most out of Requests.
+Cette partie de la documentation commence avec des informations de fond sur Requests, puis nous présentons étape par étape les instructions pour tirer le meilleur parti de Requests.
 
 .. toctree::
    :maxdepth: 2
@@ -94,11 +99,10 @@ instructions for getting the most out of Requests.
    user/advanced
 
 
-Community Guide
------------------
+Guide de la communauté
+-----------------------
 
-This part of the documentation, which is mostly prose, details the
-Requests ecosystem and community.
+Cette partie de la documentation détaille l'ecosystème de Requests et de sa communauté
 
 .. toctree::
    :maxdepth: 1
@@ -108,11 +112,10 @@ Requests ecosystem and community.
    community/support
    community/updates
 
-API Documentation
------------------
+Documentation de l'API
+----------------------
 
-If you are looking for information on a specific function, class or method,
-this part of the documentation is for you.
+Si vous cherchez des informations sur une fonction, une classe ou une méthode spécifique, c'est dans cette partie de la documentation que vous devez regarder.
 
 .. toctree::
    :maxdepth: 2
@@ -120,11 +123,10 @@ this part of the documentation is for you.
    api
 
 
-Developer Guide
----------------
+Guide du développeur
+--------------------
 
-If you want to contribute to the project, this part of the documentation is for
-you.
+Si vous voulez contribuer au projet, cette partie de la documentation est pour vous
 
 .. toctree::
    :maxdepth: 1

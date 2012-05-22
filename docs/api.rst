@@ -5,16 +5,19 @@ API
 
 .. module:: requests
 
-This part of the documentation covers all the interfaces of Requests.  For
-parts where Requests depends on external libraries, we document the most
-important right here and provide links to the canonical documentation.
+Cette partie de la documentation présente toutes les interfaces possibles de
+Requests. Pour certaines parties, Requests dépend de librairies externes,
+nous documentons les plus importantes ici et fournissons des liens vers
+les documentations externes.
 
 
-Main Interface
---------------
 
-All of Request's functionality can be accessed by these 7 methods.
-They all return an instance of the :class:`Response <Response>` object.
+Interface Principale
+--------------------
+
+Toutes les fonctionnalités de Requests sont accessibles via ces 7 méthodes.
+Elles retournent toutes une instance de l'objet :class:`Response <Response>`.
+
 
 .. autofunction:: request
 
@@ -79,11 +82,11 @@ Async
 
 
 
-Utilities
----------
+Utilitaires
+-----------
 
-These functions are used internally, but may be useful outside of
-Requests.
+Ces fonctions sont utilisées en internes, mais peuvent être utiles 
+en dehors de Requests.
 
 .. module:: requests.utils
 
@@ -111,7 +114,7 @@ Cookies
 .. autofunction:: add_dict_to_cookiejar
 
 
-Encodings
+Encodages
 ~~~~~~~~~
 
 .. autofunction:: get_encodings_from_content
@@ -120,12 +123,12 @@ Encodings
 .. autofunction:: decode_gzip
 
 
-Internals
----------
+Internes
+--------
 
-These items are an internal component to Requests, and should never be
-seen by the end user (developer). This part of the API documentation
-exists for those who are extending the functionality of Requests.
+Ces éléments sont des composants internes de Requests, et ne doivent jamais
+être vus par l'utilisateur final (développeur). Cette partie de la documentation
+existe uniquement pour ceux qui étendent les fonctionnalités de Requests.
 
 
 Classes

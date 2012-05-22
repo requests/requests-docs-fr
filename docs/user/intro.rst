@@ -3,11 +3,10 @@
 Introduction
 ============
 
-Philosophy
-----------
+Philosophie
+------------
 
-Requests was developed with a few :pep:`20` idioms in mind.
-
+Requests a été développé en gardant en tête les idiomes de la :pep:`20`
 
 #. Beautiful is better than ugly.
 #. Explicit is better than implicit.
@@ -15,30 +14,30 @@ Requests was developed with a few :pep:`20` idioms in mind.
 #. Complex is better than complicated.
 #. Readability counts.
 
-All contributions to Requests should keep these important rules in mind.
+Toutes les contributions à Requests doivent suivre ces règles importantes.
 
 
-ISC License
+License ISC
 -----------
 
-A large number of open source projects you find today are `GPL Licensed`_.
-While the GPL has its time and place, it should most certainly not be your
-go-to license for your next open source project.
+Beaucoup de projets open source que vous pouvez trouver aujourd'hui sont distribués
+sous `Licence GPL`_. Alors que la GPL a eu ses heures de gloire, ce n'est pas 
+toujours la licence idéale pour les projets open source.
 
-A project that is released as GPL cannot be used in any commercial product
-without the product itself also being offered as open source.
+Un projet distribué sous licence GPL ne peut pas être utilisé dans des produits
+commerciaux sans que le produit lui-même soit également open-source.
 
-The MIT, BSD, ISC, and Apache2 licenses are great alternatives to the GPL
-that allow your open-source software to be used freely in proprietary,
-closed-source software.
+Les licences MIT, BSD, ISC, et Apache2 sont de très bonens alternatives à la GPL
+qui permettent qu'un projet open source soit utilisé librement dans des projets
+propriétaires et closed-source.
 
-Requests is released under terms of `The ISC License`_.
+Requests est distribué sous les termes de la `License ISC`_.
 
-.. _`GPL Licensed`: http://www.opensource.org/licenses/gpl-license.php
-.. _`The ISC License`: http://www.opensource.org/licenses/isc-license
+.. _`Licence GPL`: http://www.opensource.org/licenses/gpl-license.php
+.. _`License ISC`: http://www.opensource.org/licenses/isc-license
 
 
-Requests License
+Licence Requests
 ----------------
 
     Copyright (c) 2011, Kenneth Reitz
