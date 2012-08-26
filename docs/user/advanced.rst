@@ -1,21 +1,21 @@
 .. _advanced:
 
-Advanced Usage
-==============
+Utilisation avancée
+===================
 
-This document covers some of Requests more advanced features.
+Ce document traite de quelques fonctionnalités avancées de Requests.
 
 
-Session Objects
----------------
+Objets Session
+--------------
 
-The Session object allows you to persist certain parameters across
-requests. It also persists cookies across all requests made from the
-Session instance.
+L'objet Session vous permet de conserver des paramètres entre plusieurs
+requêtes. Il permet également de conserver les cookies entre toutes les 
+requêtes de la même instance Session.
 
-A session object has all the methods of the main Requests API.
+Un objet Session a toutes les methodes de l'API Requests principale.
 
-Let's persist some cookies across requests::
+Pour conserver des cookies entre les requêtes::
 
     s = requests.session()
 
@@ -26,39 +26,48 @@ Let's persist some cookies across requests::
     # '{"cookies": {"sessioncookie": "123456789"}}'
 
 
-Sessions can also be used to provide default data to the request methods::
+Les Sessions peuvent aussi être utilisées pour fournir des valeurs par défaut
+aux requêtes::
 
     headers = {'x-test': 'true'}
     auth = ('user', 'pass')
 
     with requests.session(auth=auth, headers=headers) as c:
 
-        # both 'x-test' and 'x-test2' are sent
+        # 'x-test' et 'x-test2' sont envoyés
         c.get('http://httpbin.org/headers', headers={'x-test2': 'true'})
 
 
-Any dictionaries that you pass to a request method will be merged with the session-level values that are set. The method-level parameters override session parameters.
+Tous les dictionnaires que vous passez aux methodes de requête sont fusionnés
+avec les valeur de session déja définies. Les paramètres de la méthode 
+surchargent les paramètres de session.
 
-.. admonition:: Remove a Value From a Dict Parameter
+.. admonition:: Supprimer une valeur d'un paramètre
 
-    Sometimes you'll want to omit session-level keys from a dict parameter. To do this, you simply set that key's value to ``None`` in the method-level parameter. It will automatically be omitted.
+    Parfois vous voudrez supprimer des paramètres de session lors de vos
+    requêtes. Pour cela, il suffit d'envoyer lors de l'appel de la méthode
+    un dictionnaire dont les clés seraient les paramètres a supprimer et les
+    valeurs seraient ``None``. Ces paramètres seront alors automatiquement
+    omis.
 
-All values that are contained within a session are directly available to you. See the :ref:`Session API Docs <sessionapi>` to learn more.
+Toutes les valeurs contenues dans la session sont directement accessibles.
+Pour en savoir plus, cf :ref:`Session API Docs <sessionapi>`.
 
-Request and Response Objects
-----------------------------
 
-Whenever a call is made to requests.*() you are doing two major things. First,
-you are constructing a ``Request`` object which will be sent of to a server
-to request or query some resource. Second, a ``Response`` object is generated
-once ``requests`` gets a response back from the server. The response object
-contains all of the information returned by the server and also contains the
-``Request`` object you created originally. Here is a simple request to get some
-very important information from Wikipedia's servers::
+Objets Request et Response
+--------------------------
+
+Lorsqu'un appel à requests.* est effectué, vous faites deux choses. Premièrement,
+vous construisez un object ``Request`` qui va être envoyé au serveur pour récupérer
+ou intérroger des ressources. Dès que l'objet ``requests`` reçoit une réponse du
+serveur, un object de type ``Response`` est généré. L'objet ``Response``contient
+toutes les informations retournées par le serveur mais aussi l'object ``Request``
+que vous avz crée initialement. Voici une requête simple pour obtenir des
+informations depuis les serveurs Wikipedia::
 
     >>> response = requests.get('http://en.wikipedia.org/wiki/Monty_Python')
 
-If we want to access the headers the server sent back to us, we do this::
+Si nous voulons accéder aux en-têtes renvoyées par le serveur, nous faisons::
 
     >>> response.headers
     {'content-length': '56170', 'x-content-type-options': 'nosniff', 'x-cache':
@@ -70,28 +79,28 @@ If we want to access the headers the server sent back to us, we do this::
     'text/html; charset=UTF-8', 'x-cache-lookup': 'HIT from cp1006.eqiad.wmnet:3128,
     MISS from cp1010.eqiad.wmnet:80'}
 
-However, if we want to get the headers we sent the server, we simply access the
-request, and then the request's headers::
+Toutefois, si nous souhaitons récupérer les en-têtes que nous avions envoyées au
+serveur, nous accédons simplement à la requête, et aux en-têtes de la requête::
 
     >>> response.request.headers
     {'Accept-Encoding': 'identity, deflate, compress, gzip',
     'Accept': '*/*', 'User-Agent': 'python-requests/0.13.1'}
 
 
-SSL Cert Verification
----------------------
+Verifications certificats SSL
+-----------------------------
 
-Requests can verify SSL certificates for HTTPS requests, just like a web browser. To check a host's SSL certificate, you can use the ``verify`` argument::
+Requests peut vérifier les certificats SSL sur les requêtes HTTPS, comme n'importe quel navigateur web. Pour vérifier le certificat d'un serveur, vous pouvez utiliser l'argument ``verify``::
 
     >>> requests.get('https://kennethreitz.com', verify=True)
     requests.exceptions.SSLError: hostname 'kennethreitz.com' doesn't match either of '*.herokuapp.com', 'herokuapp.com'
 
-I don't have SSL setup on this domain, so it fails. Excellent. Github does though::
+SSL n'est pas configuré sur ce domaine, donc cela génère une erreur. Parfait. Par contre, GitHub en a un::
 
     >>> requests.get('https://github.com', verify=True)
     <Response [200]>
 
-You can also pass ``verify`` the path to a CA_BUNDLE file for private certs. You can also set the ``REQUESTS_CA_BUNDLE`` environment variable.
+Vous pouvez aussi passer au paramètre ``verify`` le chemin vers un fichier ``CA_BUNDLE`` pour les certificats privés. Vous pouvez également définir la variable d'environnement ``REQUESTS_CA_BUNDLE``.
 
 Requests can also ignore verifying the SSL certficate if you set ``verify`` to False.
 
@@ -113,85 +122,84 @@ If you specify a wrong path or an invalid cert::
     SSLError: [Errno 336265225] _ssl.c:347: error:140B0009:SSL routines:SSL_CTX_use_PrivateKey_file:PEM lib
 
 
-Body Content Workflow
----------------------
+Workflow du contenu des réponses
+--------------------------------
 
-By default, when you make a request, the body of the response isn't downloaded immediately. The response headers are downloaded when you make a request, but the content isn't downloaded until you access the :class:`Response.content` attribute.
+Par défaut, lorsque vous effectuez une requête, le corps de la réponse n'est pas téléchargé automatiquement. Les en-têtes sont téléchargés, mais le contenu lui-même n'est téléchargé que lorsque vous accédez à l'attribut  :class:`Response.content`.
 
-Let's walk through it::
+Exemple::
 
     tarball_url = 'https://github.com/kennethreitz/requests/tarball/master'
     r = requests.get(tarball_url)
 
-The request has been made, but the connection is still open. The response body has not been downloaded yet.
 
-::
+La requête a été effectuée, et la connexion est toujours ouverte. Le corps de la réponse n'est pas encore été téléchargé.::
 
     r.content
 
-The content has been downloaded and cached.
+Le contenu est téléchargé et mis en cache à ce moment-là.
 
-You can override this default behavior with the ``prefetch`` parameter::
+Vous pouvez modifier ce comportement par défaut avec le paramètre ``prefetch``::
 
     r = requests.get(tarball_url, prefetch=True)
-    # Blocks until all of request body has been downloaded.
+    # Appel bloquant jusqu'à reception du corps de la réponse
 
 
-Configuring Requests
+Configurer Requests
 --------------------
 
-Sometimes you may want to configure a request to customize its behavior. To do
-this, you can pass in a ``config`` dictionary to a request or session. See the :ref:`Configuration API Docs <configurations>` to learn more.
+Vous pouvez avoir envie de configurer une requête pour personnaliser son comportement.
+Pour faire cela vous pouvez passer un dictionnaire ``config`` à une requête ou une session.
+Pour en savoir plus, cf :ref:`Configuration API Docs <configurations>` to learn more.
 
 
 Keep-Alive
 ----------
 
-Excellent news — thanks to urllib3, keep-alive is 100% automatic within a session! Any requests that you make within a session will automatically reuse the appropriate connection!
+Bonne nouvelle - grâce à urllib3, le keep-alive est 100% automatique pendant une session! Toutes les requêtes que vous ferez à travers une session réutiliseront automatiquement la connexion appropriée!
 
-Note that connections are only released back to the pool for reuse once all body data has been read; be sure to either set ``prefetch`` to ``True`` or read the ``content`` property of the ``Response`` object.
+A noter que les connexions ne sont libérées pour réutilisation seulement lorsque les données ont été lues. Faites attention à bien mettre ``prefetch`` à ``True`` ou toujours accéder à la propriété ``content`` de l'object ``Response``.
 
-If you'd like to disable keep-alive, you can simply set the ``keep_alive`` configuration to ``False``::
+Si vous souhaitez désactiver le keep-alive, vous pouvez définir l'attribut de configuration ``keep_alive`` à ``False``::
 
     s = requests.session()
     s.config['keep_alive'] = False
 
 
-Asynchronous Requests
-----------------------
+Requêtes asynchrones
+--------------------
+
+``requests.async`` a été supprimé de requests et dispose maintenant de son propre repository nommé `GRequests <https://github.com/kennethreitz/grequests>`_.
 
 
-``requests.async`` has been removed from requests and is now its own repository named `GRequests <https://github.com/kennethreitz/grequests>`_.
+Hooks d'évenements
+------------------
 
+Requests dispose d'un système de 'hooks' que vous pouvez utiliser pour
+manipuler des portions du processus de requêtage ou signaler des évènements.
 
-Event Hooks
------------
-
-Requests has a hook system that you can use to manipulate portions of
-the request process, or signal event handling.
-
-Available hooks:
+Hooks disponibles:
 
 ``args``:
-    A dictionary of the arguments being sent to Request().
+    Un dictionnaire d'arguments prêts à être envoyés à Request().
 
 ``pre_request``:
-    The Request object, directly before being sent.
+    L'objet Request, juste avant d'être envoyé.
 
 ``post_request``:
-    The Request object, directly after being sent.
+    L'objet Request, juste après avoir été envoyé.
 
 ``response``:
-    The response generated from a Request.
+    La réponse générée après une requête.
 
 
-You can assign a hook function on a per-request basis by passing a
-``{hook_name: callback_function}`` dictionary to the ``hooks`` request
-parameter::
+Vous pouvez assigner une fonction de hook par requête, en passant au 
+paramètre ``hooks`` de la Request un dictionnaire de hooks 
+``{hook_name: callback_function}``::
 
     hooks=dict(args=print_url)
 
-That ``callback_function`` will receive a chunk of data as its first
+La fonction ``callback_function`` recevra un bloc de données en premier 
 argument.
 
 ::
@@ -199,19 +207,20 @@ argument.
     def print_url(args):
         print args['url']
 
-If an error occurs while executing your callback, a warning is given.
+Si une exception apparait lors de l'éxecution du callback, un warning est
+affiché.
 
-If the callback function returns a value, it is assumed that it is to
-replace the data that was passed in. If the function doesn't return
-anything, nothing else is effected.
+Si le callback renvoie une valeur, on suppose que cela remplace les données
+qui lui ont été passées. Si la fonction ne renvoie rien, alors rien n'est
+affecté.
 
-Let's print some request method arguments at runtime::
+Affichons quelques arguments a la volée::
 
     >>> requests.get('http://httpbin.org', hooks=dict(args=print_url))
     http://httpbin.org
     <Response [200]>
 
-Let's hijack some arguments this time with a new callback::
+Cette fois-ci, modifions les arguments avec un nouveau callback::
 
     def hack_headers(args):
         if args.get('headers') is None:
@@ -224,7 +233,7 @@ Let's hijack some arguments this time with a new callback::
     hooks = dict(args=hack_headers)
     headers = dict(yo=dawg)
 
-And give it a try::
+Et essayons::
 
     >>> requests.get('http://httpbin.org/headers', hooks=hooks, headers=headers)
     {
@@ -243,26 +252,28 @@ And give it a try::
     }
 
 
-Custom Authentication
----------------------
+Authentification personnalisée
+------------------------------
 
-Requests allows you to use specify your own authentication mechanism.
+Requests vous permet de spécifier vos propres mécanismes d'authentification.
 
-Any callable which is passed as the ``auth`` argument to a request method will
-have the opportunity to modify the request before it is dispatched.
+N'importe quel 'callable' à qui l'on passe l'argument ``auth`` pour une méthode
+de requête a l'opportunité de modifier la requête avant de la dispatcher.
 
-Authentication implementations are subclasses of ``requests.auth.AuthBase``,
-and are easy to define. Requests provides two common authentication scheme
-implementations in ``requests.auth``: ``HTTPBasicAuth`` and ``HTTPDigestAuth``.
+Les implémentations d'authentification doivent hériter de la classe
+``requests.auth.AuthBase``, et sont très faciles à définir. Request fournit
+deux modèles communs d'authentification dans ``requests.auth``: ``HTTPBasicAuth``
+et ``HTTPDigestAuth``.
 
-Let's pretend that we have a web service that will only respond if the
-``X-Pizza`` header is set to a password value. Unlikely, but just go with it.
+Admettons que nous ayons un webservice qui réponde uniquement si le header ``X-Pizza``
+est présent et défini avec un certain mot de passe. Peu de chance que cela arrive,
+mais voyons voir ce que cela pourrait donner.
 
 ::
 
     from requests.auth import AuthBase
     class PizzaAuth(AuthBase):
-        """Attaches HTTP Pizza Authentication to the given Request object."""
+        """Attache l'authentification HTTP Pizza à un object Request."""
         def __init__(self, username):
             # setup any auth-related data here
             self.username = username
@@ -272,18 +283,19 @@ Let's pretend that we have a web service that will only respond if the
             r.headers['X-Pizza'] = self.username
             return r
 
-Then, we can make a request using our Pizza Auth::
+On peut alors faire une requête qui utilise notre authentification Pizza::
 
     >>> requests.get('http://pizzabin.org/admin', auth=PizzaAuth('kenneth'))
     <Response [200]>
 
-Streaming Requests
-------------------
 
-With ``requests.Response.iter_lines()`` you can easily iterate over streaming
-APIs such as the `Twitter Streaming API <https://dev.twitter.com/docs/streaming-api>`_.
+Requête en streaming
+--------------------
 
-To use the Twitter Streaming API to track the keyword "requests"::
+Avec la méthode ``requests.Response.iter_lines()`` vous pouvez facilement itérer sur des
+API en streaming comme par exemple la `Twitter Streaming API <https://dev.twitter.com/docs/streaming-api>`_.
+
+Pour utiliser la Twitter Streaming API et pister le mot-clé "requests"::
 
     import requests
     import json
@@ -292,17 +304,17 @@ To use the Twitter Streaming API to track the keyword "requests"::
         data={'track': 'requests'}, auth=('username', 'password'))
 
     for line in r.iter_lines():
-        if line: # filter out keep-alive new lines
+        if line: # filtre les lignes vides (keep-alive)
             print json.loads(line)
 
 
-Verbose Logging
+Logging verbeux
 ---------------
 
-If you want to get a good look at what HTTP requests are being sent
-by your application, you can turn on verbose logging.
+Si vous voulez avoir une bonne vision des requêtes HTTP qui sont envoyées
+par votre application, vous pouvez activer le logging verbeux.
 
-To do so, just configure Requests with a stream to write to::
+Pour cela, configurez Requests avec un stream où ecrire les logs::
 
     >>> my_config = {'verbose': sys.stderr}
     >>> requests.get('http://httpbin.org/headers', config=my_config)
@@ -310,11 +322,11 @@ To do so, just configure Requests with a stream to write to::
     <Response [200]>
 
 
-Proxies
+Proxys
 -------
 
-If you need to use a proxy, you can configure individual requests with the
-``proxies`` argument to any request method::
+Si vous avez besoin d'utiliser un proxy, vous pouvez configurer individuellement
+les requêtes avec l'argument ``proxies`` dans toutes les méthodes::
 
     import requests
 
@@ -325,7 +337,8 @@ If you need to use a proxy, you can configure individual requests with the
 
     requests.get("http://example.org", proxies=proxies)
 
-You can also configure proxies by environment variables ``HTTP_PROXY`` and ``HTTPS_PROXY``.
+Vous pouvez aussi définir des proxys avec les variables d'environnement
+``HTTP_PROXY`` et ``HTTPS_PROXY``.
 
 ::
 
