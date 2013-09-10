@@ -43,7 +43,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Requests'
-copyright = u'2012. A <a href="http://kennethreitz.com/pages/open-projects.html">Kenneth Reitz</a> Project'
+copyright = u'2013. A <a href="http://kennethreitz.com/pages/open-projects.html">Kenneth Reitz</a> Project'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -133,7 +133,6 @@ html_static_path = ['_static']
 # typographically correct entities.
 #html_use_smartypants = True
 
-# Custom sidebar templates, maps document names to template names.
 # Custom sidebar templates, maps document names to template names.
 html_sidebars = {
     'index':    ['sidebarintro.html', 'sourcelink.html', 'searchbox.html'],

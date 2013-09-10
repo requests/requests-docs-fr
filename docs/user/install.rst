@@ -10,7 +10,7 @@ La première étape pour utiliser une librairie est de l'installer correctement.
 Distribute & Pip
 ----------------
 
-Requests s'installe simplement avec `pip <http://www.pip-installer.org/>`_::
+L'installation de Request est simple avec `pip <http://www.pip-installer.org/>`_::
 
     $ pip install requests
 
@@ -21,14 +21,13 @@ ou, avec `easy_install <http://pypi.python.org/pypi/setuptools>`_::
 Mais, ce n'est pas conseillé <http://www.pip-installer.org/en/latest/other-tools.html#pip-compared-to-easy-install>`_.
 
 
-Miroir Cheeseshop
-------------------
+Miroir Cheeseshop (PyPI)
+------------------------
 
 Si Cheeseshop n'est pas accessible, vous pouvez également installer Requests 
-depuis le  `miroir personnel Cheeseshop <http://pip.kennethreitz.com/>`_ de 
-Kenneth Reitz:: 
+depuis l'un des miroirs. `Crate.io <http://crate.io>`_ est l'un d'entre eux::
 
-    $ pip install -i http://pip.kennethreitz.com/simple requests
+    $ pip install -i http://simple.crate.io/ requests
 
 
 Obtenir le code

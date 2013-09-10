@@ -16,8 +16,9 @@ Requests a été développé en gardant en tête les idiomes de la :pep:`20`
 
 Toutes les contributions à Requests doivent suivre ces règles importantes.
 
+.. _`apache2`:
 
-License ISC
+License Apache2
 -----------
 
 Beaucoup de projets open source que vous pouvez trouver aujourd'hui sont distribués
@@ -31,18 +32,13 @@ Les licences MIT, BSD, ISC, et Apache2 sont de très bonnes alternatives à la G
 qui permettent qu'un projet open source soit utilisé librement dans des projets
 propriétaires et closed-source.
 
-Requests est distribué sous les termes de la `License ISC`_.
+Requests est distribué sous les termes de la `License Apache2`_.
 
 .. _`Licence GPL`: http://www.opensource.org/licenses/gpl-license.php
-.. _`License ISC`: http://www.opensource.org/licenses/isc-license
+.. _`License Apache2`: http://www.opensource.org/licenses/Apache-2.0
 
 
 Licence Requests
 ----------------
 
-    Copyright (c) 2011, Kenneth Reitz
-
-    Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted, provided that the above copyright notice and this permission notice appear in all copies.
-
-    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-
+    .. include:: ../../LICENSE

@@ -17,7 +17,7 @@ Un objet Session a toutes les methodes de l'API Requests principale.
 
 Pour conserver des cookies entre les requêtes::
 
-    s = requests.session()
+    s = requests.Session()
 
     s.get('http://httpbin.org/cookies/set/sessioncookie/123456789')
     r = s.get("http://httpbin.org/cookies")
@@ -27,15 +27,14 @@ Pour conserver des cookies entre les requêtes::
 
 
 Les Sessions peuvent aussi être utilisées pour fournir des valeurs par défaut
-aux requêtes::
+aux requêtes. Ceci est fait en fournissant des propriétés à l'objet Session::
 
-    headers = {'x-test': 'true'}
-    auth = ('user', 'pass')
+    s = requests.Session()
+    s.auth = ('user', 'pass')
+    s.headers.update({'x-test': 'true'})
 
-    with requests.session(auth=auth, headers=headers) as c:
-
-        # 'x-test' et 'x-test2' sont envoyés
-        c.get('http://httpbin.org/headers', headers={'x-test2': 'true'})
+    # both 'x-test' and 'x-test2' are sent
+    s.get('http://httpbin.org/headers', headers={'x-test2': 'true'})
 
 
 Tous les dictionnaires que vous passez aux methodes de requête sont fusionnés
@@ -59,17 +58,17 @@ Objets Request et Response
 
 Lorsqu'un appel à requests.* est effectué, vous faites deux choses. Premièrement,
 vous construisez un object ``Request`` qui va être envoyé au serveur pour récupérer
-ou intérroger des ressources. Dès que l'objet ``requests`` reçoit une réponse du
-serveur, un object de type ``Response`` est généré. L'objet ``Response``contient
+ou intérroger des ressources. En second, un object ``Response`` est généré une
+fois que ``requests`` reçoit une réponse du servuer. L'objet ``Response`` contient
 toutes les informations retournées par le serveur mais aussi l'object ``Request``
 que vous avz crée initialement. Voici une requête simple pour obtenir des
 informations depuis les serveurs Wikipedia::
 
-    >>> response = requests.get('http://en.wikipedia.org/wiki/Monty_Python')
+    >>> r = requests.get('http://en.wikipedia.org/wiki/Monty_Python')
 
 Si nous voulons accéder aux en-têtes renvoyées par le serveur, nous faisons::
 
-    >>> response.headers
+    >>> r.headers
     {'content-length': '56170', 'x-content-type-options': 'nosniff', 'x-cache':
     'HIT from cp1006.eqiad.wmnet, MISS from cp1010.eqiad.wmnet', 'content-encoding':
     'gzip', 'age': '3080', 'content-language': 'en', 'vary': 'Accept-Encoding,Cookie',
@@ -82,10 +81,44 @@ Si nous voulons accéder aux en-têtes renvoyées par le serveur, nous faisons::
 Toutefois, si nous souhaitons récupérer les en-têtes que nous avions envoyées au
 serveur, nous accédons simplement à la requête, et aux en-têtes de la requête::
 
-    >>> response.request.headers
+    >>> r.request.headers
     {'Accept-Encoding': 'identity, deflate, compress, gzip',
-    'Accept': '*/*', 'User-Agent': 'python-requests/0.13.1'}
+    'Accept': '*/*', 'User-Agent': 'python-requests/1.2.0'}
 
+Prepared Requests
+-----------------
+
+Whenever you receive a :class:`Response <requests.models.Response>` object
+from an API call or a Session call, the ``request`` attribute is actually the
+``PreparedRequest`` that was used. In some cases you may wish to do some extra
+work to the body or headers (or anything else really) before sending a
+request. The simple recipe for this is the following::
+
+    from requests import Request, Session
+
+    s = Session()
+    prepped = Request('GET',  # or any other method, 'POST', 'PUT', etc.
+                      url,
+                      data=data
+                      headers=headers
+                      # ...
+                      ).prepare()
+    # do something with prepped.body
+    # do something with prepped.headers
+    resp = s.send(prepped,
+                  stream=stream,
+                  verify=verify,
+                  proxies=proxies,
+                  cert=cert,
+                  timeout=timeout,
+                  # etc.
+                  )
+    print(resp.status_code)
+
+Since you are not doing anything special with the ``Request`` object, you
+prepare it immediately and modified the ``PreparedRequest`` object. You then
+send that with the other parameters you would have sent to ``requests.*`` or
+``Sesssion.*``.
 
 Verifications certificats SSL
 -----------------------------
@@ -95,14 +128,15 @@ Requests peut vérifier les certificats SSL sur les requêtes HTTPS, comme n'imp
     >>> requests.get('https://kennethreitz.com', verify=True)
     requests.exceptions.SSLError: hostname 'kennethreitz.com' doesn't match either of '*.herokuapp.com', 'herokuapp.com'
 
-SSL n'est pas configuré sur ce domaine, donc cela génère une erreur. Parfait. Par contre, GitHub en a un::
+SSL n'est pas configuré sur ce domaine, donc cela génère une
+erreur. Parfait. Par contre, GitHub en a un::
 
     >>> requests.get('https://github.com', verify=True)
     <Response [200]>
 
 Vous pouvez aussi passer au paramètre ``verify`` le chemin vers un fichier ``CA_BUNDLE`` pour les certificats privés. Vous pouvez également définir la variable d'environnement ``REQUESTS_CA_BUNDLE``.
 
-Requests can also ignore verifying the SSL certficate if you set ``verify`` to False.
+Requests can also ignore verifying the SSL certificate if you set ``verify`` to False.
 
 ::
 
@@ -111,7 +145,7 @@ Requests can also ignore verifying the SSL certficate if you set ``verify`` to F
 
 By default, ``verify`` is set to True. Option ``verify`` only applies to host certs.
 
-You can also specify the local cert file either as a path or key value pair::
+You can also specify a local cert to use as client side certificate, as a single file (containing the private key and the certificate) or as a tuple of both file's path::
 
     >>> requests.get('https://kennethreitz.com', cert=('/path/server.crt', '/path/key'))
     <Response [200]>
@@ -125,33 +159,22 @@ If you specify a wrong path or an invalid cert::
 Workflow du contenu des réponses
 --------------------------------
 
-Par défaut, lorsque vous effectuez une requête, le corps de la réponse n'est pas téléchargé automatiquement. Les en-têtes sont téléchargés, mais le contenu lui-même n'est téléchargé que lorsque vous accédez à l'attribut  :class:`Response.content`.
-
-Exemple::
+Par défaut, lorsque vous effectuez une requête, le corps de la réponse n'est pas
+téléchargé automatiquement. Les en-têtes sont téléchargés, mais le contenu
+lui-même n'est téléchargé que lorsque vous accédez à l'attribut
+:class:`Response.content`::
 
     tarball_url = 'https://github.com/kennethreitz/requests/tarball/master'
     r = requests.get(tarball_url)
 
+A ce point, seulement les en-têtes de la réponse ont été téléchargé et la
+connection est toujours ouverte.::
 
-La requête a été effectuée, et la connexion est toujours ouverte. Le corps de la réponse n'est pas encore été téléchargé.::
+    if int(r.headers['content-length']) < TOO_LING:
+        content = r.content
+        ...
 
-    r.content
-
-Le contenu est téléchargé et mis en cache à ce moment-là.
-
-Vous pouvez modifier ce comportement par défaut avec le paramètre ``prefetch``::
-
-    r = requests.get(tarball_url, prefetch=True)
-    # Appel bloquant jusqu'à reception du corps de la réponse
-
-
-Configurer Requests
---------------------
-
-Vous pouvez avoir envie de configurer une requête pour personnaliser son comportement.
-Pour faire cela vous pouvez passer un dictionnaire ``config`` à une requête ou une session.
-Pour en savoir plus, cf :ref:`Configuration API Docs <configurations>` to learn more.
-
+You can further control the workflow by use of the :class:`Response.iter_content` and :class:`Response.iter_lines` methods, or reading from the underlying urllib3 :class:`urllib3.HTTPResponse` at :class:`Response.raw`.
 
 Keep-Alive
 ----------
@@ -160,16 +183,26 @@ Bonne nouvelle - grâce à urllib3, le keep-alive est 100% automatique pendant u
 
 A noter que les connexions ne sont libérées pour réutilisation seulement lorsque les données ont été lues. Faites attention à bien mettre ``prefetch`` à ``True`` ou toujours accéder à la propriété ``content`` de l'object ``Response``.
 
-Si vous souhaitez désactiver le keep-alive, vous pouvez définir l'attribut de configuration ``keep_alive`` à ``False``::
 
-    s = requests.session()
-    s.config['keep_alive'] = False
+Streaming Uploads
+-----------------
+
+Requests supports streaming uploads, which allow you to send large streams or files without reading them into memory. To stream and upload, simply provide a file-like object for your body::
+
+    with open('massive-body') as f:
+        requests.post('http://some.url/streamed', data=f)
+
+Chunk-Encoded Requests
+----------------------
+
+Requests also supports Chunked transfer encoding for outgoing and incoming requests. To send a chunk-encoded request, simply provide a generator (or any iterator without a length) for your body::
 
 
-Requêtes asynchrones
---------------------
+    def gen():
+        yield 'hi'
+        yield 'there'
 
-``requests.async`` a été supprimé de requests et dispose maintenant de son propre repository nommé `GRequests <https://github.com/kennethreitz/grequests>`_.
+    requests.post('http://some.url/chunked', data=gen())
 
 
 Hooks d'évenements
@@ -180,15 +213,6 @@ manipuler des portions du processus de requêtage ou signaler des évènements.
 
 Hooks disponibles:
 
-``args``:
-    Un dictionnaire d'arguments prêts à être envoyés à Request().
-
-``pre_request``:
-    L'objet Request, juste avant d'être envoyé.
-
-``post_request``:
-    L'objet Request, juste après avoir été envoyé.
-
 ``response``:
     La réponse générée après une requête.
 
@@ -197,15 +221,15 @@ Vous pouvez assigner une fonction de hook par requête, en passant au
 paramètre ``hooks`` de la Request un dictionnaire de hooks 
 ``{hook_name: callback_function}``::
 
-    hooks=dict(args=print_url)
+    hooks=dict(response=print_url)
 
 La fonction ``callback_function`` recevra un bloc de données en premier 
 argument.
 
 ::
 
-    def print_url(args):
-        print args['url']
+    def print_url(r, *args, **kwargs):
+        print(r.url)
 
 Si une exception apparait lors de l'éxecution du callback, un warning est
 affiché.
@@ -216,40 +240,9 @@ affecté.
 
 Affichons quelques arguments a la volée::
 
-    >>> requests.get('http://httpbin.org', hooks=dict(args=print_url))
+    >>> requests.get('http://httpbin.org', hooks=dict(response=print_url))
     http://httpbin.org
     <Response [200]>
-
-Cette fois-ci, modifions les arguments avec un nouveau callback::
-
-    def hack_headers(args):
-        if args.get('headers') is None:
-            args['headers'] = dict()
-
-        args['headers'].update({'X-Testing': 'True'})
-
-        return args
-
-    hooks = dict(args=hack_headers)
-    headers = dict(yo=dawg)
-
-Et essayons::
-
-    >>> requests.get('http://httpbin.org/headers', hooks=hooks, headers=headers)
-    {
-        "headers": {
-            "Content-Length": "",
-            "Accept-Encoding": "gzip",
-            "Yo": "dawg",
-            "X-Forwarded-For": "::ffff:24.127.96.129",
-            "Connection": "close",
-            "User-Agent": "python-requests.org",
-            "Host": "httpbin.org",
-            "X-Testing": "True",
-            "X-Forwarded-Protocol": "",
-            "Content-Type": ""
-        }
-    }
 
 
 Authentification personnalisée
@@ -272,6 +265,7 @@ mais voyons voir ce que cela pourrait donner.
 ::
 
     from requests.auth import AuthBase
+
     class PizzaAuth(AuthBase):
         """Attache l'authentification HTTP Pizza à un object Request."""
         def __init__(self, username):
@@ -288,6 +282,7 @@ On peut alors faire une requête qui utilise notre authentification Pizza::
     >>> requests.get('http://pizzabin.org/admin', auth=PizzaAuth('kenneth'))
     <Response [200]>
 
+.. _streaming-requests
 
 Requête en streaming
 --------------------
@@ -297,29 +292,16 @@ API en streaming comme par exemple la `Twitter Streaming API <https://dev.twitte
 
 Pour utiliser la Twitter Streaming API et pister le mot-clé "requests"::
 
-    import requests
     import json
+    import requests
 
-    r = requests.post('https://stream.twitter.com/1/statuses/filter.json',
-        data={'track': 'requests'}, auth=('username', 'password'))
+    r = requests.get('http://httpbin.org/stream/20', stream=True)
 
     for line in r.iter_lines():
-        if line: # filtre les lignes vides (keep-alive)
+
+        # filtre toutes les lignes vides (keep-alive)
+        if line: 
             print json.loads(line)
-
-
-Logging verbeux
----------------
-
-Si vous voulez avoir une bonne vision des requêtes HTTP qui sont envoyées
-par votre application, vous pouvez activer le logging verbeux.
-
-Pour cela, configurez Requests avec un stream où ecrire les logs::
-
-    >>> my_config = {'verbose': sys.stderr}
-    >>> requests.get('http://httpbin.org/headers', config=my_config)
-    2011-08-17T03:04:23.380175   GET   http://httpbin.org/headers
-    <Response [200]>
 
 
 Proxys
@@ -331,8 +313,8 @@ les requêtes avec l'argument ``proxies`` dans toutes les méthodes::
     import requests
 
     proxies = {
-      "http": "10.10.1.10:3128",
-      "https": "10.10.1.10:1080",
+      "http": "http://10.10.1.10:3128",
+      "https": "http://10.10.1.10:1080",
     }
 
     requests.get("http://example.org", proxies=proxies)
@@ -342,8 +324,8 @@ Vous pouvez aussi définir des proxys avec les variables d'environnement
 
 ::
 
-    $ export HTTP_PROXY="10.10.1.10:3128"
-    $ export HTTPS_PROXY="10.10.1.10:1080"
+    $ export HTTP_PROXY="http://10.10.1.10:3128"
+    $ export HTTPS_PROXY="http://10.10.1.10:1080"
     $ python
     >>> import requests
     >>> requests.get("http://example.org")
@@ -368,7 +350,7 @@ Encodings
 When you receive a response, Requests makes a guess at the encoding to use for
 decoding the response when you call the ``Response.text`` method. Requests
 will first check for an encoding in the HTTP header, and if none is present,
-will use `chardet <http://pypi.python.org/pypi/chardet>`_ to attempt to guess
+will use `charade <http://pypi.python.org/pypi/charade>`_ to attempt to guess
 the encoding.
 
 The only time Requests will not do this is if no explicit charset is present
@@ -378,7 +360,7 @@ this situation,
 specifies that the default charset must be ``ISO-8859-1``. Requests follows
 the specification in this case. If you require a different encoding, you can
 manually set the ``Response.encoding`` property, or use the raw
-``Request.content``.
+``Response.content``.
 
 HTTP Verbs
 ----------
@@ -405,17 +387,12 @@ out what type of content it is. Do this like so::
     ...
     application/json; charset=utf-8
 
-So, GitHub returns JSON. That's great, we can use the JSON module to turn it
-into Python objects. Because GitHub returned UTF-8, we should use the
-``r.text`` method, not the ``r.content`` method. ``r.content`` returns a
-bytestring, while ``r.text`` returns a Unicode-encoded string. I have no plans
-to perform byte-manipulation on this response, so I want any Unicode code
-points encoded.
+So, GitHub returns JSON. That's great, we can use the ``r.json`` method to
+parse it into Python objects.
 
 ::
 
-    >>> import json
-    >>> commit_data = json.loads(r.text)
+    >>> commit_data = r.json()
     >>> print commit_data.keys()
     [u'committer', u'author', u'url', u'tree', u'sha', u'parents', u'message']
     >>> print commit_data[u'committer']
@@ -472,7 +449,7 @@ Cool, we have three comments. Let's take a look at the last of them.
     >>> r = requests.get(r.url + u'/comments')
     >>> r.status_code
     200
-    >>> comments = json.loads(r.text)
+    >>> comments = r.json()
     >>> print comments[0].keys()
     [u'body', u'url', u'created_at', u'updated_at', u'user', u'id']
     >>> print comments[2][u'body']
@@ -509,7 +486,7 @@ the very common Basic Auth.
     >>> r = requests.post(url=url, data=body, auth=auth)
     >>> r.status_code
     201
-    >>> content = json.loads(r.text)
+    >>> content = r.json()
     >>> print content[u'body']
     Sounds great! I'll get right on it.
 
@@ -572,9 +549,61 @@ GitHub uses these for `pagination <http://developer.github.com/v3/#pagination>`_
 
 Requests will automatically parse these link headers and make them easily consumable::
 
-    >>> r.links['next']
-    'https://api.github.com/users/kennethreitz/repos?page=2&per_page=10'
+    >>> r.links["next"]
+    {'url': 'https://api.github.com/users/kennethreitz/repos?page=2&per_page=10', 'rel': 'next'}
 
-    >>> r.links['last']
-    'https://api.github.com/users/kennethreitz/repos?page=6&per_page=10'
+    >>> r.links["last"]
+    {'url': 'https://api.github.com/users/kennethreitz/repos?page=7&per_page=10', 'rel': 'last'}
 
+Transport Adapters
+------------------
+
+As of v1.0.0, Requests has moved to a modular internal design. Part of the
+reason this was done was to implement Transport Adapters, originally
+`described here`_. Transport Adapters provide a mechanism to define interaction
+methods for an HTTP service. In particular, they allow you to apply per-service
+configuration.
+
+Requests ships with a single Transport Adapter, the
+:class:`HTTPAdapter <requests.adapters.HTTPAdapter>`. This adapter provides the
+default Requests interaction with HTTP and HTTPS using the powerful `urllib3`_
+library. Whenever a Requests :class:`Session <Session>` is initialized, one of
+these is attached to the :class:`Session <Session>` object for HTTP, and one
+for HTTPS.
+
+Requests enables users to create and use their own Transport Adapters that
+provide specific functionality. Once created, a Transport Adapter can be
+mounted to a Session object, along with an indication of which web services
+it should apply to.
+
+::
+
+    >>> s = requests.Session()
+    >>> s.mount('http://www.github.com', MyAdapter())
+
+The mount call registers a specific instance of a Transport Adapter to a
+prefix. Once mounted, any HTTP request made using that session whose URL starts
+with the given prefix will use the given Transport Adapter.
+
+Implementing a Transport Adapter is beyond the scope of this documentation, but
+a good start would be to subclass the ``requests.adapters.BaseAdapter`` class.
+
+.. _`described here`: http://kennethreitz.org/exposures/the-future-of-python-http
+.. _`urllib3`: https://github.com/shazow/urllib3
+
+Blocking Or Non-Blocking?
+-------------------------
+
+With the default Transport Adapter in place, Requests does not provide any kind
+of non-blocking IO. The ``Response.content`` property will block until the
+entire response has been downloaded. If you require more granularity, the
+streaming features of the library (see :ref:`streaming-requests`) allow you to
+retrieve smaller quantities of the response at a time. However, these calls
+will still block.
+
+If you are concerned about the use of blocking IO, there are lots of projects
+out there that combine Requests with one of Python's asynchronicity frameworks.
+Two excellent examples are `grequests`_ and `requests-futures`_.
+
+.. _`grequests`: https://github.com/kennethreitz/grequests
+.. _`requests-futures`: https://github.com/ross/requests-futures

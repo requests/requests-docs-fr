@@ -68,7 +68,10 @@ exemple, si vous souhaitez passer ``key1=value1`` et ``key2=value2`` à
 Vous pouvez constater que l'URL a été correctement encodée en imprimant l'URL::
 
     >>> print r.url
-    u'http://httpbin.org/get?key2=value2&key1=value1'
+    http://httpbin.org/get?key2=value2&key1=value1
+
+Note that any dictionary key whose value is ``None`` will not be added to the
+URL's query string.
 
 
 Contenu de la réponse
@@ -80,7 +83,7 @@ de la timeline GitHub::
     >>> import requests
     >>> r = requests.get('https://github.com/timeline.json')
     >>> r.text
-    '[{"repository":{"open_issues":0,"url":"https://github.com/...
+    u'[{"repository":{"open_issues":0,"url":"https://github.com/...
 
 Lorsque vous effectuez une requête, Requests devine l'encodage de la réponse en
 fonction des en-têtes HTTP. Le texte décodé selon cet encodage est alors
@@ -127,21 +130,24 @@ Si vous devez travailler avec des données JSON, Requests dispose dun décodeur 
 
     >>> import requests
     >>> r = requests.get('https://github.com/timeline.json')
-    >>> r.json
+    >>> r.json()
     [{u'repository': {u'open_issues': 0, u'url': 'https://github.com/...
 
-Si jamais le décodage échoue, ``r.json`` renvoie simplement ``None``.
-
+Si jamais le décodage JSON échoue, ``r.json`` soulève une exception. Par exemple,
+si la réponse est un 401 (Non authorisé), ``r.json`` soulève ``ValueError: No
+JSON object could be decoded``
 
 Réponse brute
 -------------
 
 Dans de rares cas, si vous avez besoin d'accéder au contenu brut de la 
-réponse serveur, vous pouvez y accéder avec ``r.raw``::
+réponse serveur, vous pouvez y accéder avec ``r.raw``. Si vous voulez faire
+cela, soyez sûr d'avoir indiqué ``stream=True`` dans votre requête initiale. 
+Une fois que vous l'avez fait, vous pouvez faire ceci::
 
+    >>> r = requests.get('https://github.com/timeline.json', stream=True)
     >>> r.raw
     <requests.packages.urllib3.response.HTTPResponse object at 0x101194810>
-
     >>> r.raw.read(10)
     '\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\x03'
 
@@ -172,12 +178,12 @@ sera automatiquement encodé comme un formulaire au moment de la requête::
     >>> r = requests.post("http://httpbin.org/post", data=payload)
     >>> print r.text
     {
-      // ...snip... //
+      ...
       "form": {
         "key2": "value2",
         "key1": "value1"
       },
-      // ...snip... //
+      ...
     }
 
 Dans certains cas, vous ne souhaitez pas que les données soit encodées. 
@@ -205,11 +211,11 @@ Requests simplifie l'upload de fichiers encodés en MultiPart::
     >>> r = requests.post(url, files=files)
     >>> r.text
     {
-      // ...snip... //
+      ...
       "files": {
         "file": "<censored...binary...data>"
       },
-      // ...snip... //
+      ...
     }
 
 Pour forcer le nom du fichier explicitement::
@@ -220,11 +226,11 @@ Pour forcer le nom du fichier explicitement::
     >>> r = requests.post(url, files=files)
     >>> r.text
     {
-      // ...snip... //
+      ...
       "files": {
         "file": "<censored...binary...data>"
       },
-      // ...snip... //
+      ...
     }
 
 Vous pouvez également envoyer des chaînes de caractères en tant que fichier ::
@@ -235,11 +241,11 @@ Vous pouvez également envoyer des chaînes de caractères en tant que fichier :
     >>> r = requests.post(url, files=files)
     >>> r.text
     {
-      // ...snip... //
+      ...
       "files": {
         "file": "some,data,to,send\\nanother,row,to,send\\n"
       },
-      // ...snip... //
+      ...
     }
 
 
@@ -258,8 +264,10 @@ les vérifications :
     >>> r.status_code == requests.codes.ok
     True
 
-Si nous faisons une mauvaise requête (code de retour autre que 200), nous
-pouvons lever une exception avec :class:`Response.raise_for_status()`::
+<<<<<<< HEAD
+Si nous faisons une mauvaise requête (une erreur client 4XX ou une erreur
+serveur), nous pouvons lever une exception avec
+:class:`Response.raise_for_status()`::
 
     >>> bad_r = requests.get('http://httpbin.org/status/404')
     >>> bad_r.status_code
@@ -289,14 +297,13 @@ une simple dictionnaire Python::
 
     >>> r.headers
     {
-        'status': '200 OK',
         'content-encoding': 'gzip',
         'transfer-encoding': 'chunked',
         'connection': 'close',
         'server': 'nginx/1.0.4',
         'x-runtime': '148ms',
         'etag': '"e1ca502697e5c9317743dc078f67693f"',
-        'content-type': 'application/json; charset=utf-8'
+        'content-type': 'application/json'
     }
 
 Ce dictionnaire est cependant particulier : Il est spécifique aux en-têtes HTTP.
@@ -306,15 +313,10 @@ les en-têtes HTTP ne doivent pas être sensibles à la casse.
 Donc, nous pouvons accéder aux en-têtes quelque soit la casse utilisée::
 
     >>> r.headers['Content-Type']
-    'application/json; charset=utf-8'
+    'application/json'
 
     >>> r.headers.get('content-type')
-    'application/json; charset=utf-8'
-
-Si l'en-tête n'existe pas dans la Response, la valeur par défaut est ``None``::
-
-    >>> r.headers['X-Random']
-    None
+    'application/json'
 
 
 Cookies
@@ -322,11 +324,11 @@ Cookies
 
 Si la résponse contient des Cookies, vous pouvez y accéder rapidement::
 
-    >>> url = 'http://httpbin.org/cookies/set/requests-is/formidable'
+    >>> url = 'http://example.com/some/cookie/setting/url'
     >>> r = requests.get(url)
 
-    >>> r.cookies['requests-is']
-    'formidable'
+    >>> r.cookies['example_cookie_name']
+    'example_cookie_value'
 
 Pour envoyer vos propres cookies au serveur, vous pouvez utiliser le
 paramètre ``cookies``::
@@ -338,57 +340,15 @@ paramètre ``cookies``::
     >>> r.text
     '{"cookies": {"cookies_are": "working"}}'
 
-
-Authentification basique
-------------------------
-
-La plupart des services web nécessitent une authentification. Il y a
-différents types d'authentification, mais la plus commune est 
-l'authentification HTTP basique.
-
-Utiliser l'authentification basique avec Requests est extrêmement simple::
-
-    >>> from requests.auth import HTTPBasicAuth
-    >>> requests.get('https://api.github.com/user', auth=HTTPBasicAuth('user', 'pass'))
-    <Response [200]>
-
-Comme l'authentification HTTP basique est le standard le plus répandu, Requests 
-fournit un raccourci pour cette méthode d'authentification::
-
-    >>> requests.get('https://api.github.com/user', auth=('user', 'pass'))
-    <Response [200]>
-
-Fournir de cette manière un tuple d'authentification au paramètre `auth` 
-équivaut à utiliser l'exemple ``HTTPBasicAuth`` ci-dessus.
-
-
-Authentification Digest 
------------------------
-
-Une autre forme populaire de protection des web services est l'authentification Digest::
-
-    >>> from requests.auth import HTTPDigestAuth
-    >>> url = 'http://httpbin.org/digest-auth/auth/user/pass'
-    >>> requests.get(url, auth=HTTPDigestAuth('user', 'pass'))
-    <Response [200]>
-
-
-Authentification OAuth
-----------------------
-
-Le projet `requests-oauth <http://pypi.python.org/pypi/requests-oauth>`_ de Miguel Araujo fournit une interface
-simple pour établir des connexions OAuth. La documentation et des exemples peuvent être trouvées sur `git repository <https://github.com/maraujop/requests-oauth>`_.
-
-
 Redirections et Historique
 --------------------------
 
 Requests effectue automatiquement les redirections lorsque vous utilisez les
 méthodes GET et OPTIONS.
 
-GutHub par exemple redirige tout le traffic HTTP vers HTTPS. Nous pouvons
-utiliser la méthode ``history`` de l'object Response pour tracker les
-redirections. Regardons ce qu'il se passe pour Github::
+GitHub redirige toutes les requêtes HTTP vers HTTPS. Nous pouvons utiliser la
+méthode ``history`` de l'objet Response pour tracer les redirections. Regardons
+ce qu'il se passe pour Github::
 
     >>> r = requests.get('http://github.com')
     >>> r.url
@@ -400,6 +360,7 @@ redirections. Regardons ce qu'il se passe pour Github::
 
 La liste :class:`Response.history` contient la liste des objets 
 :class:`Request` qui ont été crées pour compléter la requête. Cette liste est triée de la plus ancienne à la plus récente.
+du plus ancien au plus récent.
 
 Si vous utilisez les methodes GET ou OPTIONS, vous pouvez désactiver la 
 gestion des redirections avec le paramètre ``allow_redirects``::
@@ -429,33 +390,31 @@ avec le paramètre ``timeout``::
     >>> requests.get('http://github.com', timeout=0.001)
     Traceback (most recent call last):
       File "<stdin>", line 1, in <module>
-    requests.exceptions.Timeout: Request timed out.
+    requests.exceptions.Timeout: HTTPConnectionPool(host='github.com', port=80): Request timed out. (timeout=0.001)
 
-.. admonition:: Note:
 
-    ``timeout`` affecte uniquement le délai de connection, pas le temps de téléchargment
-    des réponses.
+.. admonition:: Note
 
+    ``timeout`` n'est pas une limite de temps sur le téléchargement de la
+    réponse entière, mais plutot, lève une exception si le serveur n'a pas
+    commencé à répondre pour le ``timeout`` specifié. 
 
 Erreurs et Exceptions
 ---------------------
 
 Dans le cas de problèmes de réseau (e.g. erreurs DNS, connexions refusées, etc),
-Requests lévera une exception :class:`ConnectionError`.
+Requests lévera une exception :class:`~requests.exceptions.ConnectionError`.
 
 Dans les rares cas de réponses HTTP invalides, Requests lévera une exception 
-:class:`HTTPError`.
+:class:`~requests.exceptions.HTTPError`.
 
-Si une requête dépasse le temps d'attente, une exception :class:`Timeout` est levée.
+Si une requête dépasse le temps d'attente, une exception :class:`~requests.exceptions.timeout` est levée.
 
 Si une requête dépasse le nombre maximum de redirections possibles configuré,
-une exception :class:`TooManyRedirects` est levée.
+une exception :class:`~requests.exceptions.TooManyRedirects` est levée.
 
-Toutes les exceptions levées par Requests héritent de :class:`requests.exceptions.RequestException`.
-
-Vous pouvez vous réferer à :ref:`Configuration API Docs <configurations>` si vous souhaitez toujours lever 
-des exceptions :class:`HTTPError` avec l'option ``danger_mode``, ou laisser Requests attraper la majorité 
-des :class:`requests.exceptions.RequestException` avec l'option ``safe_mode``.
+Toutes les exceptions levées par Requests héritent de
+:class:`requests.exceptions.RequestException`.
 
 -----------------------
 

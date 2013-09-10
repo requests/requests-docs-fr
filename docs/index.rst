@@ -30,7 +30,7 @@ Ca ne devrait pas se passer comme ca. Pas en Python.
     'utf-8'
     >>> r.text
     u'{"type":"User"...'
-    >>> r.json
+    >>> r.json()
     {u'private_gists': 419, u'total_private_repos': 77, ...}
 
 Voir `le même code, sans Requests <https://gist.github.com/973705>`_.
@@ -45,13 +45,12 @@ qui est directement intégré à Requests.
 Témoignages
 ------------
 
-`Kippt <http://kippt.com>`_, `Heroku <http://heroku.com>`_, `PayPal <https://www.paypal.com/>`_,
-`Transifex <https://www.transifex.net/>`_,
-`Native Instruments <http://www.native-instruments.com/>`_, `The Washington Post <http://www.washingtonpost.com/>`_,
-`Twitter, Inc <http://twitter.com>`_,
-`Readability <http://readability.com>`_, and
-Federal US Institutions
-utilisent Requests en interne. Le module a été installé plus de 100,000 fois via PyPI.
+Le Gouvernement de sa Majesté, Amazon, Google, Twilio, Mozilla, Heroku, PayPal,
+NPR, Obama for America, Transifex, Native Instruments, The Washington Post,
+Twitter, SoundCloud, Kippt, Readability, et les institutions Fédérales
+Américaines utilisent Requests en Internet.
+
+Il a été téléchargé plus de 3,000,000 de fois depuis PyPI.
 
 **Armin Ronacher**
     Requests est l'exemple parfait de ce que peut être une belle API grâce
@@ -85,7 +84,8 @@ Requests est prêt pour le web d'aujourd'hui
 - Corps des réponses en unicode
 - Upload de fichiers multiparts
 - Timeouts de connexion
-- supprt de ``.netrc``
+- support de ``.netrc``
+- Python 2.6-3.3
 - Thread-safe.
 
 
@@ -101,6 +101,7 @@ Cette partie de la documentation commence avec des informations de fond sur Requ
    user/install
    user/quickstart
    user/advanced
+   user/authentication
 
 
 Guide de la communauté
@@ -119,7 +120,8 @@ Cette partie de la documentation détaille l'ecosystème de Requests et de sa co
 Documentation de l'API
 ----------------------
 
-Si vous cherchez des informations sur une fonction, une classe ou une méthode spécifique, c'est dans cette partie de la documentation que vous devez regarder.
+Si vous cherchez des informations sur une fonction, une classe ou une méthode
+spécifique, c'est dans cette partie de la documentation que vous devez regarder.
 
 .. toctree::
    :maxdepth: 2
@@ -127,14 +129,16 @@ Si vous cherchez des informations sur une fonction, une classe ou une méthode s
    api
 
 
-Guide du développeur
---------------------
+Guide du contributeur
+---------------------
 
-Si vous voulez contribuer au projet, cette partie de la documentation est pour vous
+Si vous voulez contribuer au projet, cette partie de la documentation est pour
+vous.
 
 .. toctree::
    :maxdepth: 1
 
+   dev/philosophy
    dev/internals
    dev/todo
    dev/authors
