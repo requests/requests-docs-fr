@@ -3,23 +3,29 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Requests: HTTP pour les humains
-===============================
+Requests: HTTP pour les Humains™
+================================
 
 Release v\ |version|. (:ref:`Installation <install>`)
 
-Requests est une librairie HTTP :ref:`sous licence ISC<isc>`, écrite en Python,
-pour les êtres humains.
 
-Le module **urllib2** de la librairie standard fournit toutes les
-fonctionnalités dont vous avez besoin, mais son API est complètement **moisie**.
-Il a été crée dans une autre époque - lorsque le web était autre chose,
-et demande une *énorme* quantité de travail (voire des remplacements de
-méthodes) pour achever les plus simples tâches.
+.. image:: https://pepy.tech/badge/requests
+    :target: https://pepy.tech/project/requests
+    
+.. image:: https://img.shields.io/pypi/l/requests.svg
+    :target: https://pypi.org/project/requests/
 
-Ca ne devrait pas se passer comme ca. Pas en Python.
+.. image:: https://img.shields.io/pypi/wheel/requests.svg
+    :target: https://pypi.org/project/requests/
 
-::
+.. image:: https://img.shields.io/pypi/pyversions/requests.svg
+    :target: https://pypi.org/project/requests/
+
+**Requests** est une librairie HTTP élégante et simple pour Python, créée pour les êtres humains.
+
+-------------------
+
+**Voici le pouvoir de Requests**::
 
     >>> r = requests.get('https://api.github.com/user', auth=('user', 'pass'))
     >>> r.status_code
@@ -35,58 +41,34 @@ Ca ne devrait pas se passer comme ca. Pas en Python.
 
 Voir `le même code, sans Requests <https://gist.github.com/973705>`_.
 
-Requests reprend tout les travaux autour de Python HTTP/1.1 - et rend
-l'intégration avec des webservices très facile. Pas besoin d'ajouter des
-querystrings à vos URLs manuellement, ou d'encoder vous-même vos datas pour
-les POST. Les Keep-alive et le groupement des connexions HTTP sont 100%
-automatisés, grâce à `urllib3 <https://github.com/shazow/urllib3>`_,
-qui est directement intégré à Requests.
-
-Témoignages
-------------
-
-Le Gouvernement de sa Majesté, Amazon, Google, Twilio, Mozilla, Heroku, PayPal,
-NPR, Obama for America, Transifex, Native Instruments, The Washington Post,
-Twitter, SoundCloud, Kippt, Readability, et les institutions Fédérales
-Américaines utilisent Requests en Internet.
-
-Il a été téléchargé plus de 3,000,000 de fois depuis PyPI.
-
-**Armin Ronacher**
-    Requests est l'exemple parfait de ce que peut être une belle API grâce
-    à la bonne dose d'abstraction.
-
-**Matt DeBoard**
-    Je vais me tatouer le module Python requests de @kennethreitz
-    sur le corps, d'une façon ou d'une autre. partout.
-
-**Daniel Greenfeld**
-    Je viens de passer de 1200 lignes de code spaghetti à 10 lignes de code
-    grâce au module requests de @kennethreitz. Aujourd'hui est un grand jour.
-
-**Kenny Meyers**
-    HTTP avec Python: si vous avez un doute, ou pas, utilisez Requests.
-    Beau, simple, pythonic.
-
+**Requests** vous permet d'envoyer des requêtes HTTP/1.1 extrêmement facilement.
+Il n'y a pas besoin d'ajouter manuellement des chaînes de requête
+à vos URLs, ou d'encoder par formulaire vos données POST. Le maitien en version
+et la mise en commun des connexions sont à 100% automatiques, grâce à
+`urllib3 <https://github.com/shazow/urllib3>`_. 
 
 Fonctionnalités
 ---------------
 
-Requests est prêt pour le web d'aujourd'hui
+Requests est prêt pour le web d'aujourd'hui.
 
-- Gestion domaines et URLS internationales
-- Keep-Alive & Groupement de connections (Pooling)
-- Sessions et Cookies persistants
-- Verification SSL
-- Authentifications Basic/Digest ou personnalisées
-- Gestion élégante des Cookies clé/valeur
+- Maintien en vie & mise en commun des connections
+- Gestion de domaines internationaux et URLs
+- Sessions avec persistance des cookies
+- Vérification SSL de type navigateur
+- Décodage automatique de contenu
+- Authentication Basic/Digest
+- Gestion élégante des cookies clé/valeur
 - Décompression automatique
-- Corps des réponses en unicode
-- Upload de fichiers multiparts
-- Timeouts de connexion
-- support de ``.netrc``
-- Python 2.6-3.3
-- Thread-safe.
+- Unicode Response Bodies
+- Support des proxy HTTP(S)
+- Téléversement de fichiers en plusieurs parties
+- Téléchargements en streaming
+- Délais de connexion
+- Requêtes fractionnées
+- Support  ``.netrc`` 
+
+Requests supporte officiellement Python 2.7 & 3.4-3.7, and s'exécute bien sur Pypy.
 
 
 Guide utilisateur
@@ -110,12 +92,16 @@ Guide de la communauté
 Cette partie de la documentation détaille l'ecosystème de Requests et de sa communauté
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
+   community/sponsors
+   community/recommended
    community/faq
-   community/out-there.rst
+   community/out-there
    community/support
+   community/vulnerabilities
    community/updates
+   community/release-process
 
 Documentation de l'API
 ----------------------
@@ -136,9 +122,12 @@ Si vous voulez contribuer au projet, cette partie de la documentation est pour
 vous.
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 3
 
    dev/philosophy
    dev/internals
    dev/todo
    dev/authors
+
+Il n'y a plus de guides. Vous êtes maintenant sans aide.
+Bonne chance.

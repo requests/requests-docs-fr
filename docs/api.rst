@@ -5,18 +5,16 @@ Developer Interface
 
 .. module:: requests
 
-Cette partie de la documentation présente toutes les interfaces possibles de
-Requests. Pour certaines parties, Requests dépend de librairies externes,
-nous documentons les plus importantes ici et fournissons des liens vers
-les documentations externes.
+This part of the documentation covers all the interfaces of Requests. For
+parts where Requests depends on external libraries, we document the most
+important right here and provide links to the canonical documentation.
 
 
+Main Interface
+--------------
 
-Interface Principale
---------------------
-
-Toutes les fonctionnalités de Requests sont accessibles via ces 7 méthodes.
-Elles retournent toutes une instance de l'objet :class:`Response <Response>`.
+All of Requests' functionality can be accessed by these 7 methods.
+They all return an instance of the :class:`Response <Response>` object.
 
 .. autofunction:: request
 
@@ -27,9 +25,30 @@ Elles retournent toutes une instance de l'objet :class:`Response <Response>`.
 .. autofunction:: patch
 .. autofunction:: delete
 
+Exceptions
+----------
+
+.. autoexception:: requests.RequestException
+.. autoexception:: requests.ConnectionError
+.. autoexception:: requests.HTTPError
+.. autoexception:: requests.URLRequired
+.. autoexception:: requests.TooManyRedirects
+.. autoexception:: requests.ConnectTimeout
+.. autoexception:: requests.ReadTimeout
+.. autoexception:: requests.Timeout
+
+
+Request Sessions
+----------------
+
+.. _sessionapi:
+
+.. autoclass:: Session
+   :inherited-members:
+
 
 Lower-Level Classes
-~~~~~~~~~~~~~~~~~~~
+-------------------
 
 .. autoclass:: requests.Request
    :inherited-members:
@@ -37,77 +56,60 @@ Lower-Level Classes
 .. autoclass:: Response
    :inherited-members:
 
-Request Sessions
-----------------
 
-.. autoclass:: Session
+Lower-Lower-Level Classes
+-------------------------
+
+.. autoclass:: requests.PreparedRequest
+   :inherited-members:
+
+.. autoclass:: requests.adapters.BaseAdapter
    :inherited-members:
 
 .. autoclass:: requests.adapters.HTTPAdapter
    :inherited-members:
 
+Authentication
+--------------
 
-Exceptions
-~~~~~~~~~~
-
-.. autoexception:: requests.exceptions.RequestException
-.. autoexception:: requests.exceptions.ConnectionError
-.. autoexception:: requests.exceptions.HTTPError
-.. autoexception:: requests.exceptions.URLRequired
-.. autoexception:: requests.exceptions.TooManyRedirects
+.. autoclass:: requests.auth.AuthBase
+.. autoclass:: requests.auth.HTTPBasicAuth
+.. autoclass:: requests.auth.HTTPProxyAuth
+.. autoclass:: requests.auth.HTTPDigestAuth
 
 
-Status Code Lookup
-~~~~~~~~~~~~~~~~~~
 
-.. autofunction:: requests.codes
-
-::
-
-    >>> requests.codes['temporary_redirect']
-    307
-
-    >>> requests.codes.teapot
-    418
-
-    >>> requests.codes['\o/']
-    200
-
-Cookies
-~~~~~~~
-
-.. autofunction:: requests.utils.dict_from_cookiejar
-.. autofunction:: requests.utils.cookiejar_from_dict
-.. autofunction:: requests.utils.add_dict_to_cookiejar
-
-
-Encodages
-~~~~~~~~~
+Encodings
+---------
 
 .. autofunction:: requests.utils.get_encodings_from_content
 .. autofunction:: requests.utils.get_encoding_from_headers
 .. autofunction:: requests.utils.get_unicode_from_response
 
 
-Classes
-~~~~~~~
+.. _api-cookies:
 
-.. autoclass:: requests.Response
+Cookies
+-------
+
+.. autofunction:: requests.utils.dict_from_cookiejar
+.. autofunction:: requests.utils.add_dict_to_cookiejar
+.. autofunction:: requests.cookies.cookiejar_from_dict
+
+.. autoclass:: requests.cookies.RequestsCookieJar
    :inherited-members:
 
-.. autoclass:: requests.Request
+.. autoclass:: requests.cookies.CookieConflictError
    :inherited-members:
 
-.. autoclass:: requests.PreparedRequest
-   :inherited-members:
 
-.. _sessionapi:
 
-.. autoclass:: requests.Session
-   :inherited-members:
+Status Code Lookup
+------------------
 
-.. autoclass:: requests.adapters.HTTPAdapter
-   :inherited-members:
+.. autoclass:: requests.codes
+
+.. automodule:: requests.status_codes
 
 
 Migrating to 1.x
@@ -137,7 +139,7 @@ API Changes
       s = requests.Session()    # formerly, session took parameters
       s.auth = auth
       s.headers.update(headers)
-      r = s.get('http://httpbin.org/headers')
+      r = s.get('https://httpbin.org/headers')
 
 * All request hooks have been removed except 'response'.
 
@@ -155,7 +157,8 @@ API Changes
 
       # in 0.x, passing prefetch=False would accomplish the same thing
       r = requests.get('https://github.com/timeline.json', stream=True)
-      r.raw.read(10)
+      for chunk in r.iter_content(8192):
+          ...
 
 * The ``config`` parameter to the requests method has been removed. Some of
   these options are now configured on a ``Session`` such as keep-alive and
@@ -167,19 +170,22 @@ API Changes
       import requests
       import logging
 
-      # these two lines enable debugging at httplib level (requests->urllib3->httplib)
+      # Enabling debugging at http.client level (requests->urllib3->http.client)
       # you will see the REQUEST, including HEADERS and DATA, and RESPONSE with HEADERS but without DATA.
       # the only thing missing will be the response.body which is not logged.
-      import httplib
-      httplib.HTTPConnection.debuglevel = 1
-      
+      try: # for Python 3
+          from http.client import HTTPConnection
+      except ImportError:
+          from httplib import HTTPConnection
+      HTTPConnection.debuglevel = 1
+
       logging.basicConfig() # you need to initialize logging, otherwise you will not see anything from requests
       logging.getLogger().setLevel(logging.DEBUG)
-      requests_log = logging.getLogger("requests.packages.urllib3")
+      requests_log = logging.getLogger("urllib3")
       requests_log.setLevel(logging.DEBUG)
       requests_log.propagate = True
-      
-      requests.get('http://httpbin.org/headers')
+
+      requests.get('https://httpbin.org/headers')
 
 
 
@@ -191,6 +197,64 @@ license from the ISC_ license to the `Apache 2.0`_ license. The Apache 2.0
 license ensures that contributions to Requests are also covered by the Apache
 2.0 license.
 
-.. _ISC: http://opensource.org/licenses/ISC
-.. _Apache 2.0: http://opensource.org/licenses/Apache-2.0
+.. _ISC: https://opensource.org/licenses/ISC
+.. _Apache 2.0: https://opensource.org/licenses/Apache-2.0
 
+
+Migrating to 2.x
+----------------
+
+
+Compared with the 1.0 release, there were relatively few backwards
+incompatible changes, but there are still a few issues to be aware of with
+this major release.
+
+For more details on the changes in this release including new APIs, links
+to the relevant GitHub issues and some of the bug fixes, read Cory's blog_
+on the subject.
+
+.. _blog: https://lukasa.co.uk/2013/09/Requests_20/
+
+
+API Changes
+~~~~~~~~~~~
+
+* There were a couple changes to how Requests handles exceptions.
+  ``RequestException`` is now a subclass of ``IOError`` rather than
+  ``RuntimeError`` as that more accurately categorizes the type of error.
+  In addition, an invalid URL escape sequence now raises a subclass of
+  ``RequestException`` rather than a ``ValueError``.
+
+  ::
+
+      requests.get('http://%zz/')   # raises requests.exceptions.InvalidURL
+
+  Lastly, ``httplib.IncompleteRead`` exceptions caused by incorrect chunked
+  encoding will now raise a Requests ``ChunkedEncodingError`` instead.
+
+* The proxy API has changed slightly. The scheme for a proxy URL is now
+  required.
+
+  ::
+
+      proxies = {
+        "http": "10.10.1.10:3128",    # use http://10.10.1.10:3128 instead
+      }
+
+      # In requests 1.x, this was legal, in requests 2.x,
+      #  this raises requests.exceptions.MissingSchema
+      requests.get("http://example.org", proxies=proxies)
+
+
+Behavioural Changes
+~~~~~~~~~~~~~~~~~~~~~~~
+
+* Keys in the ``headers`` dictionary are now native strings on all Python
+  versions, i.e. bytestrings on Python 2 and unicode on Python 3. If the
+  keys are not native strings (unicode on Python 2 or bytestrings on Python 3)
+  they will be converted to the native string type assuming UTF-8 encoding.
+
+* Values in the ``headers`` dictionary should always be strings. This has
+  been the project's position since before 1.0 but a recent change
+  (since version 2.11.0) enforces this more strictly. It's advised to avoid
+  passing header values as unicode when possible.

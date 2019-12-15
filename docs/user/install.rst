@@ -1,55 +1,43 @@
 .. _install:
 
-Installation
-============
+Installation of Requests
+========================
 
-Cette partie de la documentation traite de l'installation de Requests.
-La première étape pour utiliser une librairie est de l'installer correctement.
-
-
-Distribute & Pip
-----------------
-
-L'installation de Request est simple avec `pip <http://www.pip-installer.org/>`_::
-
-    $ pip install requests
-
-ou, avec `easy_install <http://pypi.python.org/pypi/setuptools>`_::
-
-    $ easy_install requests
-
-Mais, ce n'est pas conseillé <http://www.pip-installer.org/en/latest/other-tools.html#pip-compared-to-easy-install>`_.
+.. image:: https://farm5.staticflickr.com/4230/35550376215_da1bf77a8c_k_d.jpg
 
 
-Miroir Cheeseshop (PyPI)
-------------------------
-
-Si Cheeseshop n'est pas accessible, vous pouvez également installer Requests 
-depuis l'un des miroirs. `Crate.io <http://crate.io>`_ est l'un d'entre eux::
-
-    $ pip install -i http://simple.crate.io/ requests
+This part of the documentation covers the installation of Requests.
+The first step to using any software package is getting it properly installed.
 
 
-Obtenir le code
----------------
+$ pipenv install requests
+-------------------------
 
-Requests est activement développé sur GitHub, ou le code est
-`toujours disponible <https://github.com/kennethreitz/requests>`_.
+To install Requests, simply run this simple command in your terminal of choice::
 
-Vous pouvez cloner le dépot public::
+    $ pipenv install requests
 
-    git clone git://github.com/kennethreitz/requests.git
+If you don't have `pipenv <http://pipenv.org/>`_ installed (tisk tisk!), head over to the Pipenv website for installation instructions. Or, if you prefer to just use pip and don't have it installed,
+`this Python installation guide <https://requests.readthedocs.io/en/master/user/install/>`_
+can guide you through the process.
 
-Télécharger le `tarball <https://github.com/kennethreitz/requests/tarball/master>`_::
+Get the Source Code
+-------------------
 
-    $ curl -OL https://github.com/kennethreitz/requests/tarball/master
+Requests is actively developed on GitHub, where the code is
+`always available <https://github.com/psf/requests>`_.
 
-Ou, télécharger le `zipball <https://github.com/kennethreitz/requests/zipball/master>`_::
+You can either clone the public repository::
 
-    $ curl -OL https://github.com/kennethreitz/requests/zipball/master
+    $ git clone git://github.com/psf/requests.git
 
+Or, download the `tarball <https://github.com/psf/requests/tarball/master>`_::
 
-Une fois que vous avez une copie de la source, vous pouvez l'intégrer dans votre package
-Python, ou l'installer facilement dans votre dossier site-packages::
+    $ curl -OL https://github.com/psf/requests/tarball/master
+    # optionally, zipball is also available (for Windows users).
 
-    $ python setup.py install
+Once you have a copy of the source, you can embed it in your own Python
+package, or install it into your site-packages easily::
+
+    $ cd requests
+    $ pip install .

@@ -3,10 +3,13 @@
 Introduction
 ============
 
-Philosophie
-------------
+.. image:: https://farm5.staticflickr.com/4317/35198386374_1939af3de6_k_d.jpg
 
-Requests a été développé en gardant en tête les idiomes de la :pep:`20`
+Philosophy
+----------
+
+Requests was developed with a few :pep:`20` idioms in mind.
+
 
 #. Beautiful is better than ugly.
 #. Explicit is better than implicit.
@@ -14,31 +17,31 @@ Requests a été développé en gardant en tête les idiomes de la :pep:`20`
 #. Complex is better than complicated.
 #. Readability counts.
 
-Toutes les contributions à Requests doivent suivre ces règles importantes.
+All contributions to Requests should keep these important rules in mind.
 
 .. _`apache2`:
 
-License Apache2
------------
+Apache2 License
+---------------
 
-Beaucoup de projets open source que vous pouvez trouver aujourd'hui sont distribués
-sous `Licence GPL`_. Alors que la GPL a eu ses heures de gloire, ce n'est pas 
-toujours la licence idéale pour les projets open source.
+A large number of open source projects you find today are `GPL Licensed`_.
+While the GPL has its time and place, it should most certainly not be your
+go-to license for your next open source project.
 
-Un projet distribué sous licence GPL ne peut pas être utilisé dans des produits
-commerciaux sans que le produit lui-même soit également open-source.
+A project that is released as GPL cannot be used in any commercial product
+without the product itself also being offered as open source.
 
-Les licences MIT, BSD, ISC, et Apache2 sont de très bonnes alternatives à la GPL
-qui permettent qu'un projet open source soit utilisé librement dans des projets
-propriétaires et closed-source.
+The MIT, BSD, ISC, and Apache2 licenses are great alternatives to the GPL
+that allow your open-source software to be used freely in proprietary,
+closed-source software.
 
-Requests est distribué sous les termes de la `License Apache2`_.
+Requests is released under terms of `Apache2 License`_.
 
-.. _`Licence GPL`: http://www.opensource.org/licenses/gpl-license.php
-.. _`License Apache2`: http://www.opensource.org/licenses/Apache-2.0
+.. _`GPL Licensed`: https://opensource.org/licenses/gpl-license.php
+.. _`Apache2 License`: https://opensource.org/licenses/Apache-2.0
 
 
-Licence Requests
+Requests License
 ----------------
 
     .. include:: ../../LICENSE
