@@ -89,7 +89,7 @@ Cette partie de la documentation commence avec des informations de fond sur Requ
 Guide de la communauté
 -----------------------
 
-Cette partie de la documentation détaille l'ecosystème de Requests et de sa communauté
+Cette partie de la documentation détaille l'ecosystème de Requests et sa communauté.
 
 .. toctree::
    :maxdepth: 2
@@ -103,11 +103,11 @@ Cette partie de la documentation détaille l'ecosystème de Requests et de sa co
    community/updates
    community/release-process
 
-Documentation de l'API
-----------------------
+Documentation de l'API / Guide
+------------------------------
 
 Si vous cherchez des informations sur une fonction, une classe ou une méthode
-spécifique, c'est dans cette partie de la documentation que vous devez regarder.
+spécifique, c'est dans cette partie de la documentation que vous devriez regarder.
 
 .. toctree::
    :maxdepth: 2
